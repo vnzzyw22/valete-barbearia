@@ -35,14 +35,28 @@ node --max-old-space-size=6000 validate.mjs $SRC ../../public/videos/valete-hero
 Amostras para inspeção visual: `node process.mjs src=$SRC mode=sample frames=20,75,200,358` e
 `node passB.mjs src=/tmp/passA.mkv mode=sample frames=366,372,380,388`. Os PNGs (`s_N.png`, `b_N.png`) mostram original em cima e resultado embaixo.
 
-## Estado em 2026-10-13
+## Estado em 2026-10-13 (v2 publicada)
 
-- `public/videos/valete-hero-v1.mp4` (3,2 MB) foi validado:
-  - sem legenda visível em 24 quadros amostrados e nos trechos de risco (flash, fade final);
-  - variação temporal na faixa tratada nunca acima da do original (sem cintilação);
-  - PSNR fora da faixa: 43,3 dB.
-- **Defeitos conhecidos da v1**, nos quadros ~364–391 (cena do teto):
-  - listras horizontais no canto esquerdo (x < ~100) da faixa: a reprojeção grampeava em x = 0;
-  - uma cruz tênue (ornamento do neon) volta à esquerda em 385–391.
-- `passB.mjs` **já contém a correção** dos dois defeitos, mas ela **não foi executada nem validada**. Próximo passo: rodar os comandos acima, gerar a v2, inspecionar 364–395 em 1:1 (região x 0–240, y 560–760) e só então trocar a referência no componente.
-- Resíduo aceito: em tecido com textura forte (jeans, malha), os traços preenchidos ficam um pouco mais lisos que o entorno. Em 1:1 parado dá para notar procurando; em movimento e na escala da Hero (~0,7×), não aparece.
+- **`public/videos/valete-hero-v2.mp4`** (3,3 MB, 720×1280, 30 fps, 472 quadros, 15,7 s, H.264
+  High, CRF 19, yuv420p, `+faststart`, sem áudio) substitui a v1, que saiu do repositório.
+  Poster: `public/videos/valete-hero-v2-poster.webp` (quadro 440, 36 KB).
+- **O que mudou no passo B:** a correção da borda esquerda que estava no script (voltar para o
+  passo A onde o quadro 392 não cobre) trazia de volta o "A m" do neon na coluna x < ~110 em
+  366–382, pior que a v1. Agora essa coluna usa uma **segunda referência** (quadro 365, o último
+  antes de o neon chegar à borda; a câmera aproxima, então ele enxerga a coluna que o 392 já
+  perdeu), com o mesmo ajuste de escala/translação por NCC e o mesmo ganho/offset por bloco. Até
+  4 px além da borda da segunda referência usa a borda repetida, para não sobrar um filete de
+  2–3 px do neon em x ≈ 0. A calibração de ganho/offset passou a ignorar amostras fora da
+  referência.
+- **Validação da v2** (`validate.mjs`): PSNR fora da faixa 43,30 dB (igual à v1). Os maiores
+  excessos de variação temporal são os mesmos da v1 (quadro 71 com +3,1, por exemplo); a v2
+  melhora o 365 (+1,1 contra +1,45) e soma +1,4 a +1,6 em 388–389, na rampa de saída da
+  reprojeção, que é movimento real de câmera nesse trecho.
+- **Inspeção 1:1** (x 0–240, y 560–760, quadros 364–395, v1 lado a lado com v2, e borda x 0–60
+  ampliada 2×): sem as listras da v1 em 364–371, sem a cruz da v1 em 385–391 e sem neon. O
+  "salto" do pilar entre 391 e 392 existe igual no original (a câmera acelera ali). Doze
+  momentos do vídeo inteiro conferidos contra o original: nenhuma legenda; o grafismo "VALETE"
+  e o logo na capa do cliente preservados.
+- **Resíduo aceito (o mesmo da v1, vem do passo A):** em tecido com textura forte (jeans, malha
+  da camisa), os traços preenchidos ficam um pouco mais lisos que o entorno. Visível a 1:1 com
+  o vídeo parado; em movimento e na escala da Hero, não aparece.
