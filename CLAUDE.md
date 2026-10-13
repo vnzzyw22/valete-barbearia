@@ -1,5 +1,10 @@
 @AGENTS.md
 
+> **Este repositório é a Valete Barbearia (cópia independente do Lkas Locs).** Comece por
+> `HANDOFF.md`: estado atual, decisões do usuário, bloqueios e próximos passos. O guia
+> abaixo é o histórico técnico do Lkas — vale pelas lições de arquitetura e bugs, não pela
+> identidade visual, pelos dados nem pelos textos. Nunca usar o Supabase do Lkas aqui.
+
 # Lkas Locs — guia do projeto
 
 Site + agendamento + painel administrativo para a marca Lkas Locs (locs, tranças,
