@@ -8,110 +8,75 @@ web
 
 ## Users
 
-Primário: clientes de serviços capilares (locs, tranças, twists, cuidados
-capilares, barbearia) em Maringá, PR, visitando o site pra conhecer serviços
-e portfólio e agendar horário. Secundário: a proprietária/profissional da
-Lkas Locs, usando o painel administrativo (`/admin`) pra gerenciar agenda,
-clientes, serviços, galeria e financeiro — único usuário admin (1
-profissional por deployment, sem tabela de papéis).
+Primário: homens que procuram corte e barba e querem ver o trabalho e marcar horário pelo
+celular ou computador. Secundário: a equipe da Valete, que usa o painel (`/admin`) para
+agenda, clientes, serviços, profissionais, galeria, pagamentos e financeiro.
 
 ## Product Purpose
 
-Site institucional + agendamento online + painel administrativo para a marca
-Lkas Locs. O cliente escolhe um serviço, vê disponibilidade real (calculada a
-partir da agenda e do horário de funcionamento) e confirma o pedido via
-WhatsApp; o agendamento fica pendente até a profissional confirmar pelo
-painel. Sucesso = agendamentos reais entrando pelo site sem fricção e sem
-conflito de horário.
+Site institucional + agendamento online + painel administrativo da Valete Barbearia — Cut and
+Beard. O cliente escolhe serviço, profissional, data e horário a partir da disponibilidade
+real e envia o pedido; o sinal via Pix manual é opcional. Sucesso = agendamentos reais
+entrando pelo site, sem conflito de horário e sem precisar de conversa para marcar.
 
 ## Positioning
 
-Primeiro cliente de uma base pensada para reuso: o mesmo código-base será
-clonado e reimplantado (Vercel + Supabase próprios) para outros profissionais
-futuros, sem multi-tenancy — dados da marca isolados em `business_settings`,
-nunca hardcoded. Diferencial de posicionamento visual: identidade premium,
-street, editorial e fashion — explicitamente não um site genérico de
-salão/barbearia.
+Barbearia de corte e barba com estética escura, fria e cuidadosa. O site deve parecer a casa:
+a parede carvão com o script branco, a luz fria e o trabalho de perto. Não é uma barbearia
+"vintage" de navalha e couro, nem um salão genérico.
 
 ## Operating Context
 
-- Fluxo público: Navbar → Hero → Serviços → Galeria → Sobre → Contato (landing
-  de seção única), mais a página dedicada `/agendar` (wizard: serviço → data
-  → horário → dados do cliente → confirmação via WhatsApp).
-- Painel administrativo (`/admin`, autenticado via Supabase Auth, único papel
-  "admin"): Dashboard, Agenda (confirmar/cancelar, bloquear horários),
-  Clientes, Serviços, Galeria (upload no Supabase Storage), Financeiro,
-  Configurações (dados da marca e horário de funcionamento).
-- Sem pagamento antecipado. Cliente não cancela pelo sistema — só a
-  proprietária, pelo painel. Status de agendamento: Pendente, Confirmado,
-  Cancelado.
+- Base técnica herdada do Lkas Locs (Next.js 16, React 19, Tailwind v4, Supabase): template
+  clonado por cliente, um negócio por deployment, dados da marca em `business_settings`.
+- **Ainda não existe projeto Supabase da Valete.** O `.env.local` do Lkas aponta para a
+  produção de outro cliente e nunca pode ser usado aqui.
+- Testes locais rodam contra um banco descartável com dados sintéticos marcados `[TESTE]`
+  (ver `HANDOFF.md`).
 
 ## Capabilities and Constraints
 
-- Stack já definida (não greenfield): Next.js 16 (App Router, TypeScript) +
-  Tailwind CSS v4 + Supabase (Postgres/Auth/Storage) + Vercel. Deploy ainda
-  não conectado (repositório local).
-- Preço e duração dos 8 serviços iniciais (Loctian, Barbeiro, Terapeuta
-  Capilar, Starter Locs, Retwist, Barrel, Tranças, Twists) são placeholder,
-  100% editáveis pelo painel — nunca hardcoded no front.
-- Apenas 1 profissional por deployment — sem gerenciamento multi-profissional.
-- Fuso fixo `America/Sao_Paulo` (sem horário de verão no Brasil desde 2019).
+- Agendamento: ordem serviço → profissional → data → horário → dados. Um serviço por vez.
+- Disponibilidade, regras de negócio, sinal Pix e painel são herdados e **não** são reescritos
+  na Fase 1.
+- Vários profissionais com agenda própria; duração pode depender do tamanho do cabelo.
+- Cliente não cancela pelo site; só a equipe, pelo painel.
 
 ## Brand Commitments
 
-- Nome: Lkas Locs. Logo: ilustração de um homem com tranças + estrelas em
-  vermelho chapado, abaixo o nome — "Lkas" em vermelho, "Locs" em preto.
-  **Logo final ainda não disponível** — usar `public/imagens/foto-logo-lkas.jpg`
-  (150×150, placeholder de baixa-res) até a versão vetorial chegar; layout e
-  paleta devem ficar preparados pra troca fácil quando ela chegar.
-- Paleta deve derivar da própria logo (vermelho + preto + tons complementares
-  sofisticados) — não inventar paleta completamente diferente.
-- Referência visual vinculante para a Hero:
-  https://dribbble.com/shots/26236050-Auralee-Luxury-Bold-Fashion-Ecommerce-Website-Home-Page-Desig
-  — inspiração próxima na composição e linguagem visual (adaptada, não
-  copiada literalmente): background com profundidade, margens laterais
-  visualmente mais claras, contraste forte, tipografia grande e marcante,
-  pequenas legendas/informações espalhadas pela composição, fotos pequenas no
-  canto superior direito, elementos gráficos na parte inferior, sobreposição
-  de elementos, composição assimétrica, sensação de movimento.
-- Decalques/rabiscos de tranças-locs (street + fashion sketch + graffiti,
-  mão-desenhado) ancorados no canto inferior da Hero, parcialmente
-  ultrapassando os limites da composição — foco no cabelo/penteado (tranças,
-  locs, twists, nagô). Proibido: rostos detalhados, personagens, cartoon,
-  clipart, ilustrações genéricas, pessoas completas. Produzidos como SVG
-  codado à mão (linha/sketch), não imagem gerada.
-- Navbar tradicional/limpa, não a navegação da referência: **LKAS LOCS** |
-  Início, Serviços, Galeria, Sobre, Contato | **Agendar**.
-- Movimento: entrada de elementos ao carregar, parallax, diferentes
-  velocidades no scroll, textos entrando/saindo, imagens reveladas no scroll,
-  transições entre seções, microinterações em botões/links — sutil, sem
-  excesso de efeitos aleatórios.
+- Nome: **Valete Barbearia — Cut and Beard**.
+- Logo: script monolinha branco "Valete" + "CUT AND BEARD" + bigode com naipe de espadas.
+  Usado a partir do traçado fiel do original; nunca redesenhado.
+- Cores do brief: `#0A0A0A`, `#121212`, `#1E1E1E`, `#242424`, `#FFFFFF`, `#A0A0A0`; dourado
+  `#C5A059` só como detalhe.
+- Decisões do cliente (2026-10-13): botões arredondados; translúcidos com blur só sobre vídeo
+  ou foto; duas versões de Hero para escolha (VA/LE/TE vazado com vídeo; logo sobre vídeo com
+  título e CTA); manter a ordem atual do agendamento; usar as fotos reais; motion com Framer
+  Motion só em títulos e números reais.
+- Feedback sobre "Lobeca" é de outro projeto: perguntar antes de aplicar.
 
 ## Evidence on Hand
 
-- `public/imagens/foto-logo-lkas.jpg` — logo placeholder atual (150×150, JPG,
-  fundo branco sólido).
-- `public/imagens/foto-tranças-1.jpg`, `foto-tranças-2.jpg` — fotos reais de
-  portfólio, já com marca d'água própria; usadas na galeria e (recortadas) no
-  canto superior direito da Hero. Mais fotos reais e a logo final chegam
-  depois — não inventar imagens ou variações no meio tempo.
-- Schema de dados completo já implementado no Supabase: `business_settings`,
-  `services`, `clients`, `appointments`, `blocked_slots`, `gallery_photos`,
-  `transactions`, com RLS por tabela.
+- `assets-source/brand/valete-logo-original.jpg` (526×526).
+- `assets-source/fotos/`: 5 fotos reais 1080×1350 do Instagram e uma foto do espaço em baixa
+  resolução.
+- `assets-source/video/valete-original-com-legenda.mp4` → `public/videos/valete-hero-v2.mp4`
+  (legenda removida, ver `scripts/video-caption-removal/README.md`).
+
+**Faltam (dependem do cliente):** serviços, preços, durações, profissionais, endereço,
+horário de funcionamento, WhatsApp, Instagram, chave Pix e textos legais definitivos.
+Enquanto não chegam, o site mostra estados vazios honestos; nada é inventado no código.
 
 ## Product Principles
 
-- Dados da marca nunca hardcoded — sempre lidos de `business_settings` /
-  `services` / `gallery_photos` (modelo de template clonado por cliente).
-- Cada fase implementada e testada antes de avançar (metodologia do projeto
-  em CLAUDE.md) — não quebrar o que já funciona. Fases 1–4 concluídas:
-  backend/dados, site público (estrutura), agendamento, painel administrativo.
-- Identidade visual deve ficar deliberadamente distante de "site genérico de
-  salão/barbearia" — premium, street, editorial, fashion, forte presença
-  visual, movimento sutil, sem exagero.
+1. Mostrar só o que é real. Sem dado, o espaço vira estado vazio, não texto de mentira.
+2. Agendar tem que ser óbvio em qualquer tela: o CTA está sempre a um toque.
+3. A marca aparece pela fotografia, pelo vídeo e pelo logo, não por ornamento.
+4. Funciona sem animação: reduced motion é tratado como caminho de primeira classe.
 
 ## Accessibility & Inclusion
 
-Nenhum requisito específico confirmado ainda além dos padrões gerais —
-acessibilidade formal entra na Fase 6 do roadmap (junto com performance,
-responsividade e testes E2E).
+- Contraste AA no mínimo (texto secundário `#A0A0A0` sobre `#121212` = 7,2:1).
+- Foco visível em tudo; navegação completa por teclado.
+- Vídeo com botão de pausa e sem autoplay em `prefers-reduced-motion`.
+- `lang="pt-BR"`, textos alternativos descritivos nas fotos.
