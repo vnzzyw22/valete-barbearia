@@ -1,97 +1,136 @@
-# Valete Barbearia — passagem de sessão (Fase 1 interrompida em 2026-10-13)
+# Valete Barbearia — passagem de sessão (Fase 1, 2026-10-13, sessão na nuvem)
 
 Este repositório é a **Valete Barbearia — Cut and Beard**, cópia independente do Lkas Locs.
-O `CLAUDE.md` ainda descreve o Lkas: vale como histórico técnico (arquitetura, lições de bugs), **não** como identidade visual.
+O `CLAUDE.md` ainda descreve o Lkas: vale como histórico técnico (arquitetura, lições de bugs),
+**não** como identidade visual. A identidade da Valete está em `DESIGN.md` e `PRODUCT.md`.
 
 ## Repositórios
 
 - `origin` = `github.com/vnzzyw22/valete-barbearia`, branch `main`. É aqui que se trabalha.
-- O Lkas original (`vnzzyw22/Lkas---Locs`) **não pode ser alterado**. Na máquina do usuário ele está como `upstream`, com push desabilitado.
+- O Lkas original (`vnzzyw22/Lkas---Locs`) **não pode ser alterado**. Na máquina do usuário ele
+  está como `upstream`, com push desabilitado.
 - O commit base do Lkas é `1173853`. Tudo depois dele é Valete.
 
-## Feito até aqui
+## Estado atual
 
-1. Auditoria completa do código (ver "Arquitetura herdada").
-2. Inventário de skills: `frontend-design`, `impeccable`, `quality-gate-visual`, `ui-ux-pro-max`, `design-system`, `ui-styling`, `web-design-guidelines`, `taste`.
-   - `taste` não se aplica: o brief não tem URL de referência.
-   - Os scripts da `ui-ux-pro-max` exigem Python, ausente na máquina do usuário; foram usados só os CSVs e o checklist.
-3. **Vídeo da Hero sem legenda**: `public/videos/valete-hero-v1.mp4`, com defeitos conhecidos em ~364–391. A correção já está no script, mas não foi rodada. Detalhes, comandos e validação em `scripts/video-caption-removal/README.md`.
-4. Materiais da Valete versionados em `assets-source/`:
-   - `video/valete-original-com-legenda.mp4`: original, nunca sobrescrever.
-   - `brand/valete-logo-original.jpg`: 526×526, script branco monolinha sobre carvão (~#232323), sem alfa. "Valete" + "CUT AND BEARD" + bigode com **naipe de espadas** (♠).
-   - `fotos/`: 5 fotos reais 1080×1350 do Instagram (tratamento frio, dessaturado, pretos profundos, bigode da marca como marca d'água no centro inferior) e `valete-espaco-baixa-resolucao.webp` (382×510; só serve pequena).
+A Fase 1 tem o site público com a identidade da Valete implementado e revisado contra um banco
+local descartável. **Pendente do cliente: escolher a Hero A ou B.**
 
-**Nada do frontend da Valete foi implementado ainda.** O site renderiza o visual do Lkas.
+### Feito nesta sessão
 
-## Decisões do usuário (2026-10-13)
+1. **Vídeo v2** (`public/videos/valete-hero-v2.mp4` + poster WebP). Os dois defeitos da v1 em
+   364–391 foram corrigidos e a v1 saiu do repositório. A primeira execução do passo B como
+   estava no script trazia de volta o neon na borda esquerda; o passo B foi ajustado e
+   revalidado. Ver `scripts/video-caption-removal/README.md`.
+2. **Logo** sem redesenho (`scripts/brand/process-logo.py`):
+   - `public/brand/valete-logo.svg`: traçado fiel;
+   - `public/brand/valete-logo-alpha.png`: alfa pela luminância;
+   - `public/brand/valete-spade.svg`: naipe do próprio logo.
+   O favicon (`src/app/icon.png`) é o naipe.
+3. **Direção de arte** em `DESIGN.md` e `PRODUCT.md` (substituíram os do Lkas):
+   - conceito "carta de baralho fotografada no escuro";
+   - neutros frios e branco como ação; latão só no naipe do índice de carta;
+   - Archivo variável servida pelo projeto, em que a largura faz a hierarquia.
+4. **Site público:**
+   - tokens novos em `globals.css`; os tokens legados `brand-*` foram remapeados e `brand-red`
+     virou `accent` (branco), para o agendamento e o painel herdarem a identidade;
+   - navbar, duas Heros, Serviços (lista tabular do banco), Equipe (só com foto cadastrada),
+     O espaço (galeria do painel ou, sem ela, as fotos reais de `public/fotos/`), Contato
+     (horário e contatos do banco, só o que existir) e rodapé;
+   - FAQ, Sobre, decalques, selo e galeria do Lkas removidos, junto com `public/imagens/`, o
+     vídeo do Lkas e `scripts/process-decals.mjs`.
+5. **Textos do Lkas trocados:**
+   - metadata e OG;
+   - páginas legais (continuam placeholder honesto);
+   - login e cabeçalho do painel;
+   - mensagem do WhatsApp do agendamento;
+   - rótulo "Tamanho do cabelo";
+   - placeholder de Instagram nas configurações.
+   Regras de negócio, disponibilidade, sinal Pix e painel **não** foram reescritos.
+6. **Skills nesta sessão (nuvem):** usadas `frontend-design` e `codemakers-design` (inclusive o
+   `contrast_check.py` para a paleta). `impeccable`, `ui-ux-pro-max`, `quality-gate-visual`,
+   `web-design-guidelines` e `taste` **não estão instaladas aqui** e não foram usadas; a revisão
+   visual foi feita com screenshots do Playwright. Vale rodar a crítica `impeccable` e o
+   `quality-gate-visual` no desktop.
+7. **Banco de teste versionado** em `scripts/local-db/`: `up.sh` sobe Postgres, PostgREST e um
+   gateway falso do Supabase, com as migrations reais e dados `[TESTE]`. Ver o README da pasta.
 
-- **Botões:** arredondados. Translúcidos/blur **só** onde ficam sobre vídeo ou foto (função: legibilidade); sólidos no resto. Decisão delegada ao Claude.
-- **Hero:** montar **duas versões** e mostrar screenshots antes de escolher:
-  - (a) "VA / LE / TE" em três linhas, só contorno branco, com o vídeo aparecendo por dentro das letras;
-  - (b) o logo original (script) em destaque sobre o vídeo, com headline curta e CTA.
-- **Agendamento:** manter a ordem atual (serviço → tamanho, se houver → profissional → data → horário → dados). Sem seleção de vários serviços.
-- **Usar as fotos reais** ao longo do site.
-- **Motion com Framer Motion** no scroll: títulos e números. Números só se forem reais (preço, horário); **nada** de estatística inventada.
-- Mensagens sobre "Lobeca" são de outro projeto. Não aplicar ideias de outra marca sem confirmar.
+### Hero: duas versões para o cliente escolher
 
-## Bloqueios
+- `/?hero=a` mostra VA / LE / TE: contorno branco, vídeo dentro das letras, logo pequeno como
+  assinatura.
+- `/?hero=b` mostra o logo grande, o título "Corte e barba, com hora marcada." e o CTA, com o
+  vídeo num painel vertical enquadrado como carta.
+- O padrão é **B** (`DEFAULT_HERO` em `src/app/page.tsx`). Depois da escolha, apagar a outra
+  função em `src/components/site/hero.tsx` e o parâmetro `?hero`.
+  - Se a escolhida for a A: apagar só o componente `CardIndex` de `card-index.tsx` (`Spade` e
+    `ValeteLogo` continuam em uso). O gesto de carta só existe na B.
+  - Se for a B: apagar `hero-letters.ts`, `public/brand/hero-vale-te.svg` e
+    `scripts/brand/build-hero-letters.py`.
 
-1. **Não existe projeto Supabase da Valete.** O `.env.local` do Lkas aponta para a **produção do Lkas** e não pode ser usado aqui. Criar o projeto exige o usuário logado no Supabase/Vercel.
-   - As migrations semeiam dados do Lkas: `seed.sql` (serviços de tranças, endereço de Maringá), `20260831…`/`20260901140000…` (fotos do Lkas) e `20260926…` (profissionais Lucas/Crespo/Vênus; Lucas `…a001` é o padrão do trigger `appointments_default_professional`).
-   - Num banco novo da Valete, isso precisa de seed próprio. Desenhar antes de aplicar, sem migration destrutiva.
-2. **Faltam dados reais da Valete:** serviços, preços, profissionais, endereço, horários, WhatsApp, Instagram. O site lê tudo do banco; não inventar nada no código. Para testar visualmente, usar banco **local e descartável** com dados sintéticos marcados como teste (nunca commitar como seed real).
+## Verificação feita (2026-10-13)
 
-## Ambiente de teste sugerido (sem tocar produção nenhuma)
+Tudo contra `next build` + `next start`, com o banco local de `scripts/local-db/`:
 
-- Postgres local + PostgREST + um gateway Node mínimo que mapeia `/rest/v1/*` para o PostgREST. Esse foi o método do Lkas (ver `CLAUDE.md`, seção "Sinal via Pix manual > Testes").
-- Bootstrap SQL com:
-  - roles `anon`/`authenticated`/`service_role`/`authenticator`;
-  - schema `auth` com `auth.uid()`/`auth.role()`/`auth.jwt()` lendo `request.jwt.claims`;
-  - schema `storage` com `buckets`/`objects` (exigido pela migration da galeria).
-- `NEXT_PUBLIC_SUPABASE_URL` = gateway local; `NEXT_PUBLIC_SUPABASE_ANON_KEY` = JWT `role: anon` assinado com o segredo do PostgREST local.
-- Playwright: o MCP pode não conectar. `npx playwright` com Chromium funciona. Validar reveals com scroll real, não com screenshot `fullPage` (ver lição no `CLAUDE.md`).
+- **Larguras:** Playwright avulso em 1366, 1440, 1920, 1024 e 768 px, nas duas Heros.
+  - Zero erro ou aviso de console, zero resposta 4xx/5xx, nenhum elemento fora da viewport.
+  - Revelações conferidas com rolagem real pela roda do mouse: nada ficou com opacidade < 1.
+- **Movimento reduzido:** vídeo parado no poster, botão "Tocar", sem erro.
+- **Vídeo:** o Chromium do Playwright não tem H.264. O caminho do vídeo (máscara nas letras,
+  autoplay, pausar/tocar) foi testado servindo uma cópia VP9 só no teste. **O MP4 em si não foi
+  visto tocando num Chrome ou Safari real nesta sessão.**
+- **`/agendar` até o fim:** serviço vindo da home → profissional → data → horário → dados →
+  "Agendamento enviado!", com o registro conferido no banco (pendente, profissional certo).
+- **Fumaça:**
+  - login do painel com o admin de teste e dashboard;
+  - páginas legais e imagem OG;
+  - home e `/agendar` em 390 px (sem overflow; o refino mobile é da Fase 2).
+- **Lint:** sem erros. Restam 3 avisos antigos nos scripts de vídeo.
+
+## Problemas conhecidos e pendências
+
+1. **Não existe projeto Supabase da Valete** (depende do usuário).
+   - O `.env.local` do Lkas aponta para a **produção do Lkas** e nunca pode ser usado aqui.
+   - As migrations semeiam conteúdo do Lkas:
+     - `20260831…` e `20260901140000…`: fotos do Lkas;
+     - `20260926…`: profissionais Lucas, Crespo e Vênus; `…a001` é o padrão do trigger
+       `appointments_default_professional`.
+   - Num banco novo da Valete é preciso planejar um seed próprio antes de aplicar, sem migration
+     destrutiva. O `seed.sql` também é do Lkas (tranças, Maringá).
+2. **Faltam dados reais:** serviços, preços, profissionais, endereço, horário, WhatsApp,
+   Instagram, chave Pix e textos legais. O site mostra estados vazios; nada foi inventado.
+3. **Mobile (Fase 2):**
+   - abaixo de 1024 px as Heros empilham; em 768 px a B deixa o logo abaixo da dobra;
+   - o agendamento e o painel herdaram cores e fonte, mas mantêm rótulos em caixa-alta espaçada
+     do Lkas.
+4. **Revelações:** sem JavaScript, títulos e preços nascem com opacidade 0 (comportamento do
+   Framer Motion no SSR).
+5. **Poster:** é o quadro 440 e o vídeo começa no quadro 0, então há uma troca de imagem quando
+   o vídeo começa a tocar.
+6. **Storage:** o upload de fotos do painel (galeria e profissionais) não tem Storage no gateway
+   de teste e não foi testado.
+
+## Próximos passos
+
+1. Cliente escolhe a Hero (A ou B) e envia os dados reais.
+2. Criar o projeto Supabase e o deploy da Valete. Aplicar as migrations com seed próprio
+   (ver o bloqueio acima).
+3. Fase 2 (sessão do celular): experiência mobile do agendamento e validação funcional, sobre
+   esta mesma base. O banco de teste sobe com `bash scripts/local-db/up.sh`.
 
 ## Arquitetura herdada (preservar)
 
-- Next 16.3.3: `src/proxy.ts`, não middleware. Ler `node_modules/next/dist/docs/` antes de mexer em convenções.
-- React 19, Tailwind v4 (tokens em `src/app/globals.css`), `framer-motion` 13 e `gsap` 3 já instalados, npm.
-- Leituras públicas em `src/lib/supabase/queries.ts`; painel em `admin-queries.ts`. Disponibilidade em `src/lib/scheduling.ts`. Sinal Pix em `src/lib/deposit.ts` e `/agendar/pagamento/[id]`.
-- Wizard de agendamento: `src/components/booking/booking-form.tsx`. **Não reescrever regras de negócio.**
-- Textos do Lkas no código, a adaptar ou remover na Valete (25 arquivos; `grep -rli "lkas\|locs\|tranç\|twist\|maringá" src`):
-  - metadata e OG: `layout.tsx`, `opengraph-image.tsx`;
-  - páginas legais: `politica-de-privacidade`, `termos-de-uso`;
-  - home: `about-section`, `faq-*` (perguntas do Lkas: não reaproveitar), `hero*`, `navbar`, `footer`, `rotating-seal`, `services-section`, `gallery-carousel`;
-  - `lib/whatsapp.ts` (mensagem "Tamo junto" do Lkas), `lib/hair-length.ts` e o login do admin.
-- Mídia do Lkas em `public/imagens/` e `public/videos/lkas-hero-mobile.mp4`: não é da Valete. Remover só quando nada mais referenciar.
-
-## Direção de arte: notas de pesquisa (ainda não registradas em DESIGN.md)
-
-- **Conceito da marca:** "valete" é a carta do baralho (Jack), e o logo já traz o naipe de espadas no bigode. Há um vocabulário próprio e não genérico aqui: índice de canto de carta, simetria rotacional das figuras, proporção de carta. Usar **com contenção**, em um único lugar memorável, nunca como tema de cassino.
-- **Paleta do brief:** `#0A0A0A` / `#121212` / `#1E1E1E` / `#242424` / `#FFFFFF` / `#A0A0A0`, dourado `#C5A059` só pontual.
-  - O logo é branco puro sobre ~#232323 e não tem dourado.
-  - As fotos são frias e dessaturadas: os neutros devem ser frios/neutros, não quentes.
-  - Evitar o clichê "preto + dourado premium" (lista do CLAUDE.md global).
-- **Vídeo vertical 9:16, 720 p.** No desktop, **não** usar em tela cheia (ampliaria 2,7× e cortaria ~70% da altura). Tratar como painel vertical na altura da viewport (~506×900 a 900 px de altura, abaixo da resolução nativa, nítido), dentro de uma composição editorial assimétrica. No mobile, pode ocupar a tela.
-  - O vídeo termina com fade para escuro: bom ponto de loop.
-  - Gerar `poster` (WebP) a partir de um quadro forte para o LCP.
-- **Logo:** gerar versão com alfa a partir da luminância (branco sobre escuro → máscara), sem redesenhar, como `scripts/process-decals.mjs` fez no Lkas. Variante branca para fundos escuros.
-- **Tipografia:** ainda não escolhida.
-  - Hoje o Lkas carrega Unbounded, Sora, Montserrat, Manrope e JetBrains Mono (`layout.tsx`): trocar por um sistema de 1 ou 2 famílias escolhido para a Valete.
-  - Nada de Inter/Manrope automático.
-  - Unbounded falhou no build da Vercel via `next/font/google` e foi servida localmente: lembrar disso para qualquer fonte nova.
-- **Seções:** só com dado real. Prováveis: Hero, Serviços (do banco), Equipe (tabela `professionals`: foto e nome reais, se houver), Ambiente/fotos, Localização/horário (se confirmados), CTA, Rodapé. Sem depoimentos, estatísticas ou "diferenciais" inventados. Sem o FAQ do Lkas.
-
-## Próximos passos (ordem)
-
-1. `git pull`; ler este arquivo, o `CLAUDE.md` global do usuário (fluxo de design obrigatório), `scripts/video-caption-removal/README.md` e as skills aplicáveis.
-2. Vídeo: rodar o passo B corrigido, gerar `valete-hero-v2.mp4` e validar 364–395 em 1:1. Se estiver bom, a v2 substitui a v1 (remover a v1 do repo depois de trocar a referência). Gerar o poster.
-3. Montar o ambiente de banco local descartável e rodar `npm run build` + `next start` contra ele.
-4. Registrar a direção de arte em `DESIGN.md` (substituindo a do Lkas) e em `PRODUCT.md`.
-5. Tokens → navbar → Hero (as duas versões, com screenshots para o usuário) → seções → rodapé → metadata/OG/textos legais da Valete.
-6. Ciclo do `CLAUDE.md` global:
-   - renderizar desktop (1366/1440/1920) e intermediário (768/1024);
-   - checar console, overflow e `prefers-reduced-motion`;
-   - `impeccable` (crítica), `web-design-guidelines` (auditoria), corrigir, `quality-gate-visual`.
-7. Commit claro, push no `main` sem force, conferir o commit no GitHub, atualizar este arquivo.
-
-Fase 2 (outra sessão): experiência móvel do agendamento e validação funcional. Não reconstruir o painel admin nesta fase.
+- Next 16.3.3: `src/proxy.ts`, não middleware. Ler `node_modules/next/dist/docs/` antes de
+  mexer em convenções.
+- React 19, Tailwind v4 (tokens em `src/app/globals.css`), `framer-motion` 13 e `gsap` 3
+  instalados, npm.
+- Leituras públicas em `src/lib/supabase/queries.ts`; painel em `admin-queries.ts`.
+  Disponibilidade em `src/lib/scheduling.ts`. Sinal Pix em `src/lib/deposit.ts` e
+  `/agendar/pagamento/[id]`.
+- Wizard de agendamento: `src/components/booking/booking-form.tsx`. **Não reescrever regras de
+  negócio.**
+- Lições do Lkas que continuam valendo (ver `CLAUDE.md`):
+  - nada de z-index negativo em ancestral de `<video>`;
+  - fontes servidas pelo projeto, não por `next/font/google`;
+  - insert público sem `.select()`;
+  - `git fetch` no início de toda sessão.

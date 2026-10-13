@@ -1,28 +1,27 @@
-# Lkas Locs
+# Valete Barbearia — Cut and Beard
 
-Site + agendamento + painel administrativo para a marca Lkas Locs (locs, tranças,
-twists, cuidados capilares, barbearia — Maringá, PR). Consulte `CLAUDE.md` para o
-guia completo do projeto, decisões de arquitetura e progresso por fase.
+Site + agendamento online + painel administrativo da Valete Barbearia. Base técnica herdada do
+Lkas Locs (Next.js 16, React 19, Tailwind v4, Supabase).
 
-Projeto [Next.js](https://nextjs.org) bootstrapado com [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+- **Comece por `HANDOFF.md`:** estado atual, decisões do cliente, bloqueios e próximos passos.
+- Identidade e produto: `DESIGN.md` e `PRODUCT.md`.
+- Histórico técnico e lições de bugs (do Lkas): `CLAUDE.md`.
 
-## Getting Started
+## Rodar localmente
 
-Primeiro, rode o servidor de desenvolvimento:
+Ainda não existe projeto Supabase da Valete. Para testar sem tocar em nada real:
 
 ```bash
-npm run dev
+npm ci
+bash scripts/local-db/up.sh      # Postgres + PostgREST + gateway falso, com dados [TESTE]
+# copie as duas linhas impressas para .env.local
+npm run build && npx next start -p 3100
 ```
 
-Abra [http://localhost:3000](http://localhost:3000) no navegador para ver o resultado.
+Detalhes em `scripts/local-db/README.md`. Nunca use o `.env.local` do Lkas: ele aponta para a
+produção de outro cliente.
 
-Este projeto usa [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) para otimizar e carregar automaticamente [Geist](https://vercel.com/font).
+## Mídia
 
-## Saiba mais
-
-- [Documentação do Next.js](https://nextjs.org/docs)
-- [Aprenda Next.js](https://nextjs.org/learn)
-
-## Deploy
-
-Deploy planejado na [Vercel](https://vercel.com), conectado a este repositório.
+- Vídeo da Hero: `scripts/video-caption-removal/README.md`.
+- Logo e letras da Hero: `scripts/brand/process-logo.py` e `scripts/brand/build-hero-letters.py`.
