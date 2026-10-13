@@ -68,7 +68,7 @@ export function AdminNav({ initialPendingPayments }: AdminNavProps) {
             href={item.href}
             className={`flex items-center justify-between gap-2 whitespace-nowrap rounded-md px-3 py-2 font-nav text-xs font-bold tracking-widest uppercase transition-colors duration-200 ${
               active
-                ? "bg-brand-red text-white"
+                ? "bg-accent text-carvao"
                 : "text-white/60 hover:bg-white/5 hover:text-white"
             }`}
           >
@@ -77,7 +77,7 @@ export function AdminNav({ initialPendingPayments }: AdminNavProps) {
               <span
                 aria-label={`${pendingPayments} aguardando confirmação`}
                 className={`min-w-5 rounded-full px-1.5 py-0.5 text-center text-[11px] leading-none tabular-nums ${
-                  active ? "bg-white text-brand-red" : "bg-brand-red text-white"
+                  active ? "bg-carvao text-white" : "bg-accent text-carvao"
                 }`}
               >
                 {pendingPayments}

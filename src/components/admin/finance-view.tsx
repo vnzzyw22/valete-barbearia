@@ -133,7 +133,7 @@ export function FinanceView({
             {formatPrice(expense)}
           </p>
         </div>
-        <div className="rounded-lg border border-white/10 border-l-4 border-l-brand-red bg-[#1a1a1a] p-5">
+        <div className="rounded-lg border border-white/10 border-l-4 border-l-accent bg-[#1a1a1a] p-5">
           <p className="font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
             Saldo
           </p>

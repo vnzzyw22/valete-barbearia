@@ -1,4 +1,4 @@
-// Tamanhos de cabelo/locs que definem a duração dos serviços que dependem
+// Tamanhos de cabelo que definem a duração dos serviços que dependem
 // disso. Os valores batem com o CHECK de service_hair_durations.hair_length e
 // appointments.hair_length (supabase/migrations/20260926120000_...). Os
 // MINUTOS de cada tamanho não ficam aqui — são configurados por serviço no

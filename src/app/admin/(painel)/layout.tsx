@@ -1,3 +1,4 @@
+import { ValeteLogo } from "@/components/site/card-index";
 import { redirect } from "next/navigation";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { countPaymentsAwaitingConfirmation } from "@/lib/supabase/admin-queries";
@@ -26,15 +27,13 @@ export default async function PainelLayout({
     <div className="flex min-h-full flex-1 flex-col bg-brand-ink md:flex-row">
       <aside className="flex shrink-0 flex-col border-b border-white/10 bg-[#0f0f0f] md:w-56 md:border-b-0 md:border-r">
         <div className="px-4 py-4">
-          <span className="font-display text-lg font-bold text-white">
-            Lkas <span className="text-brand-red">Locs</span>
-          </span>
+          <ValeteLogo className="h-9" label="Valete — painel" />
         </div>
         <AdminNav initialPendingPayments={pendingPayments} />
         <form action={logout} className="border-t border-white/10 p-2">
           <button
             type="submit"
-            className="w-full rounded-md px-3 py-2 text-left font-nav text-xs font-bold tracking-widest text-white/60 uppercase transition-colors duration-200 hover:bg-white/5 hover:text-brand-red"
+            className="w-full rounded-md px-3 py-2 text-left font-nav text-xs font-bold tracking-widest text-white/60 uppercase transition-colors duration-200 hover:bg-white/5 hover:text-accent"
           >
             Sair
           </button>

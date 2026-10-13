@@ -1,76 +1,95 @@
+import Link from "next/link";
 import { formatBusinessHours } from "@/lib/business-hours";
+import type { BusinessSettings } from "@/lib/supabase/types";
 import { getWhatsappLink } from "@/lib/whatsapp";
 import { Reveal } from "./reveal";
-import type { BusinessSettings } from "@/lib/supabase/types";
+import { buttonPrimary, container, sectionTitle, textLink } from "./ui";
 
-interface ContactSectionProps {
-  business: BusinessSettings | null;
+function instagramHref(handle: string) {
+  const user = handle.replace(/^@/, "").replace(/^https?:\/\/(www\.)?instagram\.com\//, "").replace(/\/$/, "");
+  return { href: `https://instagram.com/${user}`, label: `@${user}` };
 }
 
-export function ContactSection({ business }: ContactSectionProps) {
-  const whatsappLink = business
-    ? getWhatsappLink(
-        business.whatsapp,
-        "Olá! Vim pelo site e gostaria de agendar um horário na Lkas Locs.",
-      )
+// Horário, endereço e contatos vêm de business_settings; cada bloco só aparece se preenchido.
+export function ContactSection({ business }: { business: BusinessSettings | null }) {
+  const hours = business ? formatBusinessHours(business.business_hours ?? {}) : [];
+  const whatsappHref = getWhatsappLink(business?.whatsapp ?? null, "Olá! Vim pelo site da Valete.");
+  const instagram = business?.instagram ? instagramHref(business.instagram) : null;
+  const mapsHref = business?.address
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(business.address)}`
     : null;
 
-  const hours = business ? formatBusinessHours(business.business_hours) : [];
-
   return (
-    <section id="contato" className="bg-brand-ink">
-      <div className="mx-auto grid max-w-5xl gap-10 px-6 py-14 sm:grid-cols-2 sm:py-24">
-      <Reveal>
-        <h2 className="font-display text-2xl font-bold text-brand-cream sm:text-3xl">
-          Contato
-        </h2>
-
-        <ul className="mt-6 flex flex-col gap-3 text-brand-smoke">
-          {business?.address && <li>{business.address}</li>}
-
-          {whatsappLink && (
-            <li>
-              <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-brand-red hover:underline"
-              >
-                Falar no WhatsApp
+    <section id="contato" aria-labelledby="contato-titulo" className="scroll-mt-[72px] bg-carvao py-20 md:py-32">
+      <div className={`${container} grid gap-14 md:grid-cols-12`}>
+        <div className="md:col-span-6">
+          <Reveal>
+            <h2 id="contato-titulo" className={`${sectionTitle} max-w-[12ch]`}>
+              Agende seu horário
+            </h2>
+          </Reveal>
+          <p className="mt-6 max-w-[38ch] text-[17px] leading-relaxed text-cinza">
+            Escolha o serviço, o profissional e o horário livre. A confirmação chega pela equipe.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-3">
+            <Link href="/agendar" className={buttonPrimary}>
+              Agendar horário
+            </Link>
+            {whatsappHref && (
+              <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={textLink}>
+                Chamar no WhatsApp
               </a>
-            </li>
+            )}
+          </div>
+        </div>
+
+        <div className="grid gap-12 sm:grid-cols-2 md:col-span-6">
+          {hours.length > 0 && (
+            <div>
+              <h3 className="text-lg font-bold [font-stretch:112%] text-white">Horário</h3>
+              <dl className="mt-4 border-t border-ardosia">
+                {hours.map(({ label, value }) => (
+                  <div key={label} className="flex items-baseline justify-between gap-6 border-b border-ardosia py-3">
+                    <dt className="text-[15px] text-cinza">{label}</dt>
+                    <dd className={`text-[15px] tabular-nums ${value === "Fechado" ? "text-cinza" : "text-white"}`}>
+                      <Reveal>{value}</Reveal>
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
           )}
 
-          {business?.instagram && (
-            <li>
-              <a
-                href={`https://instagram.com/${business.instagram.replace(/^@/, "")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-medium text-brand-red hover:underline"
-              >
-                @{business.instagram.replace(/^@/, "")}
-              </a>
-            </li>
+          {(business?.address || instagram || whatsappHref) && (
+            <div>
+              <h3 className="text-lg font-bold [font-stretch:112%] text-white">Contato</h3>
+              <ul className="mt-4 space-y-4 border-t border-ardosia pt-4 text-[15px] leading-relaxed">
+                {business?.address && (
+                  <li>
+                    <p className="text-white">{business.address}</p>
+                    <a href={mapsHref!} target="_blank" rel="noopener noreferrer" className="text-cinza underline underline-offset-4 hover:text-white">
+                      Ver no mapa
+                    </a>
+                  </li>
+                )}
+                {whatsappHref && (
+                  <li>
+                    <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-4 hover:decoration-white/40">
+                      WhatsApp
+                    </a>
+                  </li>
+                )}
+                {instagram && (
+                  <li>
+                    <a href={instagram.href} target="_blank" rel="noopener noreferrer" className="text-white underline underline-offset-4 hover:decoration-white/40">
+                      Instagram {instagram.label}
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </div>
           )}
-        </ul>
-      </Reveal>
-
-      {hours.length > 0 && (
-        <Reveal delay={0.1}>
-          <h3 className="font-display font-semibold text-brand-cream">
-            Horário de funcionamento
-          </h3>
-          <dl className="mt-4 flex flex-col gap-1 font-label text-sm text-brand-smoke">
-            {hours.map(({ label, value }) => (
-              <div key={label} className="flex justify-between gap-4">
-                <dt>{label}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
-          </dl>
-        </Reveal>
-      )}
+        </div>
       </div>
     </section>
   );

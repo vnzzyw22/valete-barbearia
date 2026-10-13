@@ -9,7 +9,7 @@
 export const cardClass = "rounded-lg border border-white/10 bg-[#1a1a1a] p-4";
 
 export const fieldClass =
-  "rounded-lg border border-transparent bg-white/[0.06] px-3 py-2 text-sm text-white [color-scheme:dark] transition-colors duration-200 outline-none focus:border-brand-red placeholder:text-white/30";
+  "rounded-lg border border-transparent bg-white/[0.06] px-3 py-2 text-sm text-white [color-scheme:dark] transition-colors duration-200 outline-none focus:border-accent placeholder:text-white/30";
 
 export const labelClass =
   "font-nav text-xs font-bold tracking-widest text-white/70 uppercase";
@@ -23,16 +23,16 @@ export const sectionTitleClass =
   "font-nav text-sm font-bold tracking-widest text-white uppercase";
 
 export const buttonPrimaryClass =
-  "rounded-full bg-brand-red px-5 py-2 font-nav text-xs font-bold tracking-widest text-white uppercase transition hover:opacity-90 disabled:opacity-50";
+  "rounded-full bg-accent px-5 py-2 font-nav text-xs font-bold tracking-widest text-carvao uppercase transition hover:opacity-90 disabled:opacity-50";
 
 export const buttonSecondaryClass =
-  "rounded-full border border-white/15 px-5 py-2 font-nav text-xs font-bold tracking-widest text-white/70 uppercase transition-colors duration-200 hover:border-brand-red hover:text-white disabled:opacity-50";
+  "rounded-full border border-white/15 px-5 py-2 font-nav text-xs font-bold tracking-widest text-white/70 uppercase transition-colors duration-200 hover:border-accent hover:text-white disabled:opacity-50";
 
 export const linkDangerClass =
   "font-nav text-xs font-bold tracking-widest text-white/40 uppercase transition-colors duration-200 hover:text-red-400";
 
 export const linkPrimaryClass =
-  "font-nav text-xs font-bold tracking-widest text-brand-red uppercase transition-colors duration-200 hover:text-white";
+  "font-nav text-xs font-bold tracking-widest text-accent uppercase transition-colors duration-200 hover:text-white";
 
 // Botões de filtro (navegação de data, "Hoje", etc.) — mesmo padrão visual
 // dos blocos de horário do agendamento público: cinza escuro em repouso,
@@ -40,8 +40,8 @@ export const linkPrimaryClass =
 export function filterButtonClass(active: boolean) {
   return `rounded-full border px-4 py-2 font-nav text-xs font-bold tracking-widest uppercase transition-colors duration-200 ${
     active
-      ? "border-brand-red bg-brand-red text-white"
-      : "border-transparent bg-white/[0.06] text-white/70 hover:border-brand-red hover:text-white"
+      ? "border-accent bg-accent text-carvao"
+      : "border-transparent bg-white/[0.06] text-white/70 hover:border-accent hover:text-white"
   }`;
 }
 

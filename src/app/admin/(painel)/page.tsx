@@ -112,11 +112,11 @@ export default async function DashboardPage() {
       {pendingPayments > 0 && (
         <Link
           href="/admin/pagamentos"
-          className="flex items-center gap-3 rounded-lg border border-brand-red bg-brand-red/[0.08] p-4 transition-colors duration-200 hover:bg-brand-red/[0.14]"
+          className="flex items-center gap-3 rounded-lg border border-accent bg-accent/[0.08] p-4 transition-colors duration-200 hover:bg-accent/[0.14]"
         >
           <span
             aria-hidden
-            className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full bg-brand-red"
+            className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full bg-accent"
           />
           <span className="text-sm text-white">
             <strong className="font-bold">

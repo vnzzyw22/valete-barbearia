@@ -1,97 +1,97 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { ValeteLogo } from "./card-index";
+import { buttonPrimary, container } from "./ui";
 
 const links = [
-  { href: "#topo", label: "Início" },
   { href: "#servicos", label: "Serviços" },
-  { href: "#galeria", label: "Galeria" },
-  { href: "#sobre", label: "Sobre" },
+  { href: "#espaco", label: "O espaço" },
   { href: "#contato", label: "Contato" },
 ];
 
-// Tipografia da Navbar (2026-09-03), a pedido do cliente: Montserrat em
-// vez do mono (`font-label`) do resto do site, caixa alta, peso 700,
-// tracking de 1px — "aspecto premium". Dropdown de "Serviços" (testado
-// antes) foi removido a pedido do cliente: menu simples, todos os links
-// direto na mesma linha, sem submenu.
-const navLinkClass =
-  "font-nav text-xs font-bold tracking-[1px] uppercase transition-colors duration-200 hover:text-brand-red";
-
+// Transparente sobre a Hero; ao rolar, vira carvão com borda inferior (DESIGN.md > Navbar).
 export function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const solid = scrolled || open;
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/10 bg-brand-ink/75 backdrop-blur-md">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3 min-[1700px]:max-w-none min-[1700px]:px-[6vw]">
-        <Link href="#topo" className="flex items-center gap-2.5">
-          <Image
-            src="/imagens/foto-logo-lkas.jpg"
-            alt="Lkas Locs"
-            width={36}
-            height={36}
-            className="rounded-full ring-1 ring-white/20"
-          />
-          <span className="font-display text-sm font-bold tracking-wide text-brand-cream">
-            LKAS <span className="text-brand-red">LOCS</span>
-          </span>
+    <header
+      className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
+        solid ? "border-ardosia bg-carvao" : "border-transparent bg-transparent"
+      }`}
+    >
+      <nav aria-label="Principal" className={`${container} flex h-[72px] items-center justify-between gap-6`}>
+        <Link href="/#topo" className="-m-2 p-2" aria-label="Valete — início">
+          <ValeteLogo className="h-9" label="Valete" />
         </Link>
 
-        <ul className={`hidden items-center gap-7 text-brand-smoke md:flex`}>
-          {links.map((link) => (
-            <li key={link.href}>
-              <a href={link.href} className={navLinkClass}>
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <Link
-          href="/agendar"
-          className="hidden rounded-md bg-brand-red px-5 py-2 font-label text-xs font-bold tracking-widest text-white uppercase transition-all duration-300 ease-in-out hover:brightness-110 md:inline-block"
-        >
-          Agendar
-        </Link>
+        <div className="hidden items-center gap-9 md:flex">
+          <ul className="flex items-center gap-8">
+            {links.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={`/${link.href}`}
+                  className="text-[15px] font-medium text-cinza transition-colors duration-200 hover:text-white"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <Link href="/agendar" className={`${buttonPrimary} min-h-10 px-6 py-2 text-sm`}>
+            Agendar
+          </Link>
+        </div>
 
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="flex h-9 w-9 items-center justify-center rounded-md border border-white/15 md:hidden"
-          aria-label={open ? "Fechar menu" : "Abrir menu"}
+          className="-mr-2 flex min-h-11 items-center px-2 text-[15px] font-semibold text-white md:hidden"
           aria-expanded={open}
+          aria-controls="menu-mobile"
         >
-          <span className="sr-only">Menu</span>
-          <div className="flex flex-col gap-1">
-            <span className="h-0.5 w-5 bg-brand-cream" />
-            <span className="h-0.5 w-5 bg-brand-cream" />
-            <span className="h-0.5 w-5 bg-brand-cream" />
-          </div>
+          {open ? "Fechar" : "Menu"}
         </button>
       </nav>
 
       {open && (
-        <div className="flex flex-col gap-1 border-t border-white/10 bg-brand-ink px-6 py-3 text-brand-smoke md:hidden">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              onClick={() => setOpen(false)}
-              className={`block py-2 ${navLinkClass}`}
-            >
-              {link.label}
-            </a>
-          ))}
-
-          <Link
-            href="/agendar"
-            onClick={() => setOpen(false)}
-            className="mt-2 rounded-full bg-brand-red px-4 py-2 text-center font-label text-xs font-medium tracking-widest text-brand-cream normal-case"
-          >
-            Agendar horário
-          </Link>
+        <div id="menu-mobile" className="border-t border-ardosia bg-carvao md:hidden">
+          <ul className={`${container} flex flex-col py-4`}>
+            {links.map((link) => (
+              <li key={link.href}>
+                <a
+                  href={`/${link.href}`}
+                  onClick={() => setOpen(false)}
+                  className="font-display flex min-h-14 items-center text-2xl font-bold text-white"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+            <li className="pt-4 pb-2">
+              <Link href="/agendar" onClick={() => setOpen(false)} className={`${buttonPrimary} w-full`}>
+                Agendar horário
+              </Link>
+            </li>
+          </ul>
         </div>
       )}
     </header>

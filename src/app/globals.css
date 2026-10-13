@@ -1,80 +1,117 @@
 @import "tailwindcss";
 
+/* Valete Barbearia — tokens. Ver DESIGN.md > Cores. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --valete-ink: #0a0a0a;
+  --valete-carvao: #121212;
+  --valete-grafite: #1e1e1e;
+  --valete-ardosia: #242424;
+  --valete-branco: #ffffff;
+  --valete-cinza: #a0a0a0;
+  --valete-latao: #c5a059; /* só detalhe: o naipe do índice de carta */
 
-  /* Paleta derivada da logo (vermelho + preto), estendida pro mundo
-     visual da Fase 5 — ver PRODUCT.md > Brand Commitments e DESIGN.md.
-     brand-red é o token histórico (usado no admin, login, cards do
-     site) — mantido estável; os demais são a extensão editorial. */
-  --color-brand-red: #c8102e;
-  --color-brand-black: #111111;
-  --color-brand-ink: #0d0b0a; /* preto quente, chão da Hero */
-  --color-brand-cream: #f3ede3; /* texto sobre fundo escuro */
-  --color-brand-oxblood: #4a1116; /* profundidade — gradientes/sombra */
-  --color-brand-smoke: #9c948b; /* texto secundário sobre fundo escuro */
-  --color-brand-paper: #f5f3ee; /* off-white quente pra fundo de seção clara
-    (Serviços) — diferente de --color-brand-cream, que é texto sobre fundo
-    escuro (Hero/Brand Outro), não fundo de seção clara */
+  --background: var(--valete-carvao);
+  --foreground: var(--valete-branco);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-brand-red: var(--color-brand-red);
-  --color-brand-black: var(--color-brand-black);
-  --color-brand-ink: var(--color-brand-ink);
-  --color-brand-cream: var(--color-brand-cream);
-  --color-brand-oxblood: var(--color-brand-oxblood);
-  --color-brand-smoke: var(--color-brand-smoke);
-  --color-brand-paper: var(--color-brand-paper);
-  --font-sans: var(--font-body);
-  --font-display: var(--font-display);
-  --font-heading-soft: var(--font-heading-soft);
-  --font-nav: var(--font-nav);
-  --font-label: var(--font-label);
+
+  --color-ink: var(--valete-ink);
+  --color-carvao: var(--valete-carvao);
+  --color-grafite: var(--valete-grafite);
+  --color-ardosia: var(--valete-ardosia);
+  --color-cinza: var(--valete-cinza);
+  --color-latao: var(--valete-latao);
+
+  /* Tokens legados do Lkas, remapeados para a Valete. Agendamento, painel e páginas legais
+     ainda usam estes nomes; trocando o valor aqui eles herdam a identidade sem reescrita.
+     `accent` substitui o antigo `accent`: na Valete a cor de ação é o branco. */
+  --color-accent: var(--valete-branco);
+  --color-brand-black: var(--valete-carvao);
+  --color-brand-ink: var(--valete-ink);
+  --color-brand-cream: var(--valete-branco);
+  --color-brand-smoke: var(--valete-cinza);
+
+  /* Uma família (Archivo variável); a largura faz a hierarquia. */
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-nav: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-label: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Títulos: Archivo expandida. Também atende os usos legados de `font-display`. */
+.font-display {
+  font-stretch: 125%;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-body), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-stretch: 100%;
+  font-feature-settings: "kern";
 }
 
-/* Trava de segurança contra scroll horizontal (2026-09-04) — a causa raiz
-   real (decal-locs-01.png vazando ~18px além da viewport em telas de
-   ~1366px, ver hero.tsx) já foi corrigida na origem; isto aqui é só rede
-   de proteção pra qualquer vazamento lateral futuro não travar a página
-   inteira. box-sizing: border-box já vem do preflight do Tailwind
-   (@import "tailwindcss" acima) — não precisa repetir aqui. */
+/* Rede de segurança contra scroll horizontal acidental (lição do Lkas). `clip` em vez de
+   `hidden` para não criar contêiner de rolagem nem quebrar `position: sticky`. */
 html,
 body {
-  overflow-x: hidden;
-  max-width: 100vw;
+  overflow-x: clip;
 }
 
-/* Selo giratório da Hero (2026-09-03) — ver hero-seal.tsx. CSS puro
-   (`@keyframes` + `transform: rotate`), sem Framer Motion/GSAP: é um giro
-   ambiente contínuo, não ligado a scroll nem a interação. */
-@keyframes seal-spin {
-  to {
-    transform: rotate(360deg);
+:focus-visible {
+  outline: 2px solid var(--valete-branco);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--valete-branco);
+  color: var(--valete-carvao);
+}
+
+/* Popup nativo de <select> do painel: sem isto o navegador pode abrir opções com texto
+   branco sobre fundo branco (ver theme.ts do admin). */
+select option {
+  background-color: var(--valete-grafite);
+  color: var(--valete-branco);
+}
+
+/* Entrada da Hero: uma sequência curta, em CSS para não depender da hidratação. Com movimento
+   reduzido tudo já nasce no lugar (DESIGN.md > Movimento). */
+@keyframes v-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
   }
 }
-
-.seal-spin {
-  animation: seal-spin 18s linear infinite;
+@keyframes v-fade {
+  from {
+    opacity: 0;
+  }
 }
-
-/* Corrige o popup nativo de <select> no admin (2026-09-08): o
-   `[color-scheme:dark]` do fieldClass (theme.ts) nem sempre é respeitado
-   pelo navegador na lista de opções (só no campo fechado) -- resultado é
-   texto branco (herdado do fieldClass) sobre fundo branco padrão do SO
-   nas opções abertas. Só o admin usa <select> nativo (o site público usa
-   dropdown custom em booking-form.tsx), então é seguro estilizar
-   globalmente. Cor de fundo igual ao cardClass (#1a1a1a). */
-select option {
-  background-color: #1a1a1a;
-  color: #fff;
+@keyframes v-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+.v-enter {
+  animation: v-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--v-delay, 0s);
+}
+.v-fade {
+  animation: v-fade 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: var(--v-delay, 0s);
+}
+.v-draw {
+  stroke-dasharray: 1;
+  animation: v-draw 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .v-enter,
+  .v-fade,
+  .v-draw {
+    animation: none;
+  }
 }

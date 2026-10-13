@@ -136,7 +136,7 @@ export async function getHeroGalleryPhotos(): Promise<GalleryPhoto[]> {
 }
 
 // Todas as fotos publicadas, exceto as marcadas pra Hero (categoria
-// null/"locs"/"tranças"/etc. — qualquer coisa que não seja "hero"/"topo").
+// null ou qualquer categoria que não seja "hero"/"topo").
 export async function getPublicGalleryPhotos(): Promise<GalleryPhoto[]> {
   const supabase = await createClient();
   const { data, error } = await supabase

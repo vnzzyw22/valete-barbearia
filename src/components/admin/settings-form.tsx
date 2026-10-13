@@ -116,7 +116,7 @@ export function SettingsForm({ business }: SettingsFormProps) {
         <input
           id="instagram"
           type="text"
-          placeholder="@lkaslocs"
+          placeholder="@usuario"
           value={instagram}
           onChange={(e) => {
             setInstagram(e.target.value);

@@ -42,10 +42,10 @@ const labelClass =
   "font-label text-xs font-bold tracking-widest text-brand-smoke uppercase";
 
 const primaryButtonClass =
-  "inline-flex w-full items-center justify-center rounded-full bg-brand-red px-6 py-4 text-center text-sm font-bold tracking-widest text-white uppercase transition hover:opacity-90";
+  "inline-flex w-full items-center justify-center rounded-full bg-accent px-6 py-4 text-center text-sm font-bold text-carvao transition hover:opacity-90";
 
 const secondaryButtonClass =
-  "inline-flex w-full items-center justify-center rounded-full border border-white/20 px-6 py-4 text-center text-sm font-bold tracking-widest text-white uppercase transition hover:border-brand-red";
+  "inline-flex w-full items-center justify-center rounded-full border border-white/20 px-6 py-4 text-center text-sm font-bold tracking-widest text-white uppercase transition hover:border-accent";
 
 function formatClock(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60);
@@ -233,7 +233,7 @@ export function PaymentPanel({
         {phase === "pay" && (
           <>
             <h1 className="font-display text-2xl font-black text-white uppercase sm:text-3xl">
-              Seu horário foi <span className="text-brand-red">reservado</span>
+              Seu horário foi <span className="text-accent">reservado</span>
             </h1>
             <p className="text-sm text-brand-smoke">
               {serviceName}
@@ -246,7 +246,7 @@ export function PaymentPanel({
         {phase === "review" && (
           <>
             <h1 className="font-display text-2xl font-black text-white uppercase sm:text-3xl">
-              Comprovante <span className="text-brand-red">enviado?</span>
+              Comprovante <span className="text-accent">enviado?</span>
             </h1>
             <p className="text-sm leading-relaxed text-brand-smoke">
               Seu agendamento está aguardando a confirmação da equipe. Assim
@@ -258,7 +258,7 @@ export function PaymentPanel({
         {phase === "confirmed" && (
           <>
             <h1 className="font-display text-2xl font-black text-white uppercase sm:text-3xl">
-              Horário <span className="text-brand-red">confirmado</span>
+              Horário <span className="text-accent">confirmado</span>
             </h1>
             <p className="text-sm leading-relaxed text-brand-smoke">
               A equipe conferiu o seu Pix. Já pode chegar no horário combinado.
@@ -269,7 +269,7 @@ export function PaymentPanel({
         {phase === "expired" && (
           <>
             <h1 className="font-display text-2xl font-black text-white uppercase sm:text-3xl">
-              A reserva <span className="text-brand-red">expirou</span>
+              A reserva <span className="text-accent">expirou</span>
             </h1>
             <p className="text-sm leading-relaxed text-brand-smoke">
               O tempo para pagar o sinal acabou e o horário voltou a ficar
@@ -283,7 +283,7 @@ export function PaymentPanel({
         {phase === "cancelled" && (
           <>
             <h1 className="font-display text-2xl font-black text-white uppercase sm:text-3xl">
-              Agendamento <span className="text-brand-red">cancelado</span>
+              Agendamento <span className="text-accent">cancelado</span>
             </h1>
             <p className="text-sm leading-relaxed text-brand-smoke">
               Este agendamento foi cancelado pela equipe. Você pode escolher
@@ -301,7 +301,7 @@ export function PaymentPanel({
                 <span className={labelClass}>Reserva válida por</span>
                 <span
                   className={`font-label text-lg font-bold tabular-nums ${
-                    remaining <= 60 ? "text-brand-red" : "text-white"
+                    remaining <= 60 ? "text-accent" : "text-white"
                   }`}
                 >
                   {formatClock(remaining)}
@@ -316,7 +316,7 @@ export function PaymentPanel({
                 aria-valuenow={remaining}
               >
                 <div
-                  className="h-full bg-brand-red transition-[width] duration-1000 ease-linear"
+                  className="h-full bg-accent transition-[width] duration-1000 ease-linear"
                   style={{
                     width: `${Math.min(100, (remaining / totalSeconds) * 100)}%`,
                   }}
@@ -401,7 +401,7 @@ export function PaymentPanel({
                   Antes de pagar, confira se o valor enviado é exatamente{" "}
                   <strong className="font-bold text-white">{amountLabel}</strong>.
                 </p>
-                <p className="font-display text-4xl font-black text-brand-red">
+                <p className="font-display text-4xl font-black text-accent">
                   {amountLabel}
                 </p>
               </div>
@@ -487,7 +487,7 @@ function StepMark({ n }: { n: number }) {
   return (
     <span
       aria-hidden
-      className="flex h-9 w-9 shrink-0 items-center justify-center border border-brand-red font-display text-sm font-black text-brand-red"
+      className="flex h-9 w-9 shrink-0 items-center justify-center border border-accent font-display text-sm font-black text-accent"
     >
       {n}
     </span>

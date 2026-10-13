@@ -44,7 +44,7 @@ interface SlotPickerProps {
 // select em tema escuro — sem isso o ícone do calendário sai escuro
 // sobre fundo escuro, quase invisível.
 const fieldClass =
-  "rounded-lg border border-transparent bg-white/[0.06] px-3 py-2.5 text-sm text-white [color-scheme:dark] transition-colors duration-200 outline-none focus:border-brand-red";
+  "rounded-lg border border-transparent bg-white/[0.06] px-3 py-2.5 text-sm text-white [color-scheme:dark] transition-colors duration-200 outline-none focus:border-accent";
 
 const labelClass =
   "font-label text-xs font-bold tracking-widest text-white uppercase";
@@ -54,8 +54,8 @@ const labelClass =
 function choiceClass(selected: boolean) {
   return `rounded-lg border px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
     selected
-      ? "border-brand-red bg-brand-red text-white"
-      : "border-transparent bg-white/[0.06] text-brand-smoke hover:border-brand-red hover:text-white hover:shadow-[0_0_12px_rgba(200,16,46,0.35)]"
+      ? "border-accent bg-accent text-carvao"
+      : "border-transparent bg-white/[0.06] text-brand-smoke hover:border-accent hover:text-white"
   }`;
 }
 
@@ -343,7 +343,7 @@ export function BookingForm({
         </h2>
         <p className="text-sm text-brand-smoke">
           Falta pouco: confirme o pedido pelo WhatsApp para garantir seu
-          horário. Ele fica pendente até o retorno da Lkas Locs.
+          horário. Ele fica pendente até a equipe confirmar.
         </p>
         <div className="w-full">
           <BookingSummary rows={success.summary} />
@@ -353,7 +353,7 @@ export function BookingForm({
             href={success.whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-full bg-brand-red px-6 py-3 text-sm font-bold tracking-wide text-white uppercase transition hover:opacity-90"
+            className="rounded-full bg-accent px-6 py-3 text-sm font-semibold text-carvao transition hover:opacity-90"
           >
             Confirmar no WhatsApp
           </a>
@@ -381,7 +381,7 @@ export function BookingForm({
       {asksHairLength && (
         <fieldset className="flex flex-col gap-2">
           <legend className={`${labelClass} mb-2`}>
-            Tamanho dos locs/cabelo
+            Tamanho do cabelo
           </legend>
           <p className="-mt-1 text-xs text-brand-smoke">
             O tempo do atendimento depende do tamanho.
@@ -533,7 +533,7 @@ export function BookingForm({
           </div>
 
           {deposit && (
-            <p className="rounded-lg border border-brand-red/40 bg-brand-red/[0.08] px-4 py-3 text-sm text-white">
+            <p className="rounded-lg border border-accent/40 bg-accent/[0.08] px-4 py-3 text-sm text-white">
               Para confirmar o horário é preciso um sinal de{" "}
               <strong className="font-bold">{formatPrice(deposit.amount)}</strong>{" "}
               via Pix. No próximo passo, seu horário fica reservado por{" "}
@@ -546,7 +546,7 @@ export function BookingForm({
           <button
             type="submit"
             disabled={submitting}
-            className="w-full rounded-full bg-brand-red px-6 py-4 text-sm font-bold tracking-widest text-white uppercase transition hover:opacity-90 disabled:opacity-50"
+            className="w-full rounded-full bg-accent px-6 py-4 text-[15px] font-semibold text-carvao transition hover:opacity-90 disabled:opacity-50"
           >
             {submitting
               ? "Enviando..."

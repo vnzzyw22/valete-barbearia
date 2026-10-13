@@ -308,7 +308,7 @@ export function AgendaWeekView({
             key={day.dateISO}
             className={`flex flex-col gap-2 rounded-lg border p-3 ${
               day.isToday
-                ? "border-brand-red bg-brand-red/[0.06]"
+                ? "border-accent bg-accent/[0.06]"
                 : "border-white/10 bg-[#1a1a1a]"
             }`}
           >
@@ -317,7 +317,7 @@ export function AgendaWeekView({
                 {WEEKDAY_LABELS[new Date(`${day.dateISO}T00:00:00`).getDay()]}
               </span>
               <span
-                className={`font-nav text-xs font-bold ${day.isToday ? "text-brand-red" : "text-white/70"}`}
+                className={`font-nav text-xs font-bold ${day.isToday ? "text-accent" : "text-white/70"}`}
               >
                 {dayNumberLabel(day.dateISO)}
               </span>
@@ -338,8 +338,8 @@ export function AgendaWeekView({
                     }
                     className={`flex items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-xs transition-colors duration-150 ${
                       isSelected
-                        ? "bg-brand-red text-white"
-                        : "bg-white/[0.06] text-white/85 hover:bg-brand-red hover:text-white"
+                        ? "bg-accent text-carvao"
+                        : "bg-white/[0.06] text-white/85 hover:bg-accent hover:text-carvao"
                     } ${appointment.status === "cancelled" ? "opacity-40 line-through" : ""}`}
                   >
                     <span
@@ -398,7 +398,7 @@ export function AgendaWeekView({
             <button
               type="button"
               onClick={() => openBlockForm(day.dateISO)}
-              className="mt-auto self-start font-nav text-[11px] font-bold tracking-widest text-white/30 uppercase transition-colors duration-150 hover:text-brand-red"
+              className="mt-auto self-start font-nav text-[11px] font-bold tracking-widest text-white/30 uppercase transition-colors duration-150 hover:text-accent"
             >
               + Bloquear
             </button>
@@ -484,7 +484,7 @@ export function AgendaWeekView({
                 href={
                   getWhatsappLink(
                     selection.data.client.whatsapp,
-                    `Olá, ${selection.data.client.name}! Sobre seu horário de ${timeLabel(selection.data.starts_at)} na Lkas Locs.`,
+                    `Olá, ${selection.data.client.name}! Sobre seu horário de ${timeLabel(selection.data.starts_at)}.`,
                   ) ?? undefined
                 }
                 target="_blank"

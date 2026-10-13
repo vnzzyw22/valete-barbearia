@@ -1,216 +1,89 @@
-"use client";
-
-import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 import { formatPrice, formatServiceDuration } from "@/lib/format";
-import { Reveal } from "./reveal";
 import type { Service } from "@/lib/supabase/types";
+import { getWhatsappLink } from "@/lib/whatsapp";
+import { Reveal } from "./reveal";
+import { buttonPrimary, container, sectionTitle, textLink } from "./ui";
 
 interface ServicesSectionProps {
   services: Service[];
+  whatsapp: string | null;
 }
 
-// Quantidade visível no mobile antes do "Ver todos os serviços" (inclui
-// o card de abertura em largura cheia) -- pedido do cliente pra reduzir
-// o scroll inicial da seção no celular. No desktop (sm:) sempre mostra
-// tudo, independente desse número: a classe `hidden sm:block` cuida
-// disso via CSS puro, sem precisar saber a largura real da tela em JS
-// (evita mismatch de hidratação).
-const MOBILE_VISIBLE_COUNT = 4;
-
-// Foto de fundo só no primeiro serviço (posição 0 — o cliente vai
-// deixar o mais vendido em primeiro via `display_order` no admin).
-// Mesmo tratamento "card com foto de fundo + véu escuro" testado
-// antes em 2 cards por nome; agora fixo só no card de abertura,
-// independente do nome do serviço.
-const LEAD_PHOTO = "/imagens/foto-tranças-1.jpg";
-
-// Redesenho editorial (2026-09-02), a pedido do cliente — a versão
-// anterior (cards com borda vermelha + botão sólido) lembrava tabela/
-// dashboard, sem relação com a Hero. Sem fotos por decisão explícita
-// (testar a seção só com tipografia/composição primeiro). Mantém o
-// mesmo sistema tipográfico do resto do site (Unbounded/font-display,
-// JetBrains Mono/font-label) por coerência de marca — o problema
-// nunca foi a família da fonte, era a escala/peso tímidos e a caixa
-// genérica em volta de cada serviço.
-//
-// Assimetria: o primeiro serviço vira uma "abertura" em largura
-// cheia com tipografia bem maior (mesmo gesto editorial da Hero,
-// versão contida); os demais seguem em grade, sem caixa/borda,
-// separados só por espaço negativo generoso. O numeral de cada item
-// é decorativo (`aria-hidden`) — a ordem real já vem da hierarquia de
-// heading.
-export function ServicesSection({ services }: ServicesSectionProps) {
-  const [showAll, setShowAll] = useState(false);
-  const hasMore = services.length > MOBILE_VISIBLE_COUNT;
+// Lista tabular no vernáculo da tabela de preços da parede (DESIGN.md > Seções). Tudo vem de
+// `services`; nada fixo no código.
+export function ServicesSection({ services, whatsapp }: ServicesSectionProps) {
+  const whatsappHref = getWhatsappLink(whatsapp, "Olá! Quero saber os serviços e valores.");
 
   return (
-    <section id="servicos" className="bg-brand-paper">
-      <div className="mx-auto max-w-5xl px-6 py-14 sm:py-24 lg:max-w-6xl">
-      <Reveal>
-        <div className="flex flex-col items-center gap-4">
-          <h2 className="text-center font-display text-4xl leading-none font-black tracking-tight uppercase sm:text-5xl lg:text-6xl">
-            <span
-              className="text-transparent"
-              style={{ WebkitTextStroke: "1.5px var(--color-brand-black)" }}
-            >
-              Nossos
-            </span>{" "}
-            <span className="text-brand-red">Serviços</span>
-          </h2>
-          <span aria-hidden="true" className="h-px w-16 bg-brand-red/60" />
+    <section id="servicos" aria-labelledby="servicos-titulo" className="scroll-mt-[72px] bg-carvao py-20 md:py-32">
+      <div className={`${container} grid gap-10 md:grid-cols-12`}>
+        <div className="md:col-span-4">
+          <Reveal>
+            <h2 id="servicos-titulo" className={sectionTitle}>
+              Serviços
+            </h2>
+          </Reveal>
+          {services.length > 0 && (
+            <p className="mt-5 max-w-[30ch] text-[17px] leading-relaxed text-cinza">
+              Escolha o serviço para ver os horários livres.
+            </p>
+          )}
         </div>
-      </Reveal>
 
-      {services.length === 0 ? (
-        <p className="mt-8 text-center text-neutral-500">
-          Serviços em breve.
-        </p>
-      ) : (
-        <>
-        <div className="mt-8 grid grid-cols-1 gap-x-8 gap-y-10 sm:mt-14 sm:grid-cols-2 sm:gap-y-16 lg:mt-20 lg:grid-cols-3 lg:gap-x-12 lg:gap-y-20">
-          {services.map((service, i) => {
-            const isLead = i === 0;
-            const index = String(i + 1).padStart(2, "0");
-            const tiltRight = i % 2 === 1;
-            // Nome de 1 palavra só (ex.: "Manutenção") não tem espaço pra
-            // quebrar linha — em vez de partir a palavra ao meio
-            // (`break-words`, rejeitado: ficava feio) ou deixar cortar
-            // (bug original), usa tamanho menor + `nowrap` só nesse caso.
-            // Nome de várias palavras (ex.: "Terapeuta Capilar") continua
-            // quebrando normalmente no espaço, sem precisar de tratamento
-            // especial.
-            const isSingleWord = !service.name.trim().includes(" ");
-
-            return (
-              <Reveal
-                key={service.id}
-                delay={Math.min(i, 3) * 0.07}
-                className={[
-                  isLead && "sm:col-span-2 lg:col-span-3",
-                  i >= MOBILE_VISIBLE_COUNT && !showAll && "hidden sm:block",
-                ]
-                  .filter(Boolean)
-                  .join(" ")}
-              >
-                <article
-                  className={
-                    isLead
-                      ? "relative flex min-h-[160px] flex-col justify-end gap-6 overflow-hidden rounded-xl p-6 text-brand-cream sm:min-h-[190px] sm:rounded-2xl sm:p-10 lg:min-h-[220px] lg:flex-row lg:items-end lg:justify-between lg:gap-12 lg:rounded-3xl lg:p-12"
-                      : "flex flex-col border-t border-brand-black/10 pt-6"
-                  }
-                >
-                  {isLead && (
-                    <>
-                      <Image
-                        src={LEAD_PHOTO}
-                        alt={service.name}
-                        fill
-                        sizes="(min-width: 1024px) 1100px, 100vw"
-                        className="object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-brand-ink via-brand-ink/70 to-brand-ink/20" />
-                    </>
-                  )}
-
-                  <div className="relative z-10">
-                    <span
-                      aria-hidden="true"
-                      className={`block font-display leading-none font-black select-none ${
-                        isLead
-                          ? "text-5xl text-brand-cream/20 lg:text-7xl"
-                          : `text-4xl text-brand-black/10 lg:text-5xl ${tiltRight ? "rotate-1" : "-rotate-1"}`
-                      }`}
-                    >
-                      {index}
-                    </span>
-                    <h3
-                      className={`font-display font-black tracking-tight uppercase ${
-                        isLead
-                          ? `-mt-3 sm:text-5xl lg:-mt-5 lg:text-6xl xl:text-7xl ${
-                              isSingleWord
-                                ? "text-[8vw] whitespace-nowrap sm:whitespace-normal"
-                                : "text-4xl"
-                            }`
-                          : "-mt-2 text-xl text-brand-black lg:text-2xl"
-                      }`}
-                    >
-                      {service.name}
-                    </h3>
-                    {service.description && (
-                      <p
-                        className={
-                          isLead
-                            ? "mt-3 max-w-md text-sm text-brand-cream/80 lg:text-base"
-                            : "mt-2 max-w-xs text-sm text-neutral-500"
-                        }
-                      >
-                        {service.description}
-                      </p>
-                    )}
-                  </div>
-
-                  <div
-                    className={
-                      isLead
-                        ? "relative z-10 flex shrink-0 flex-col items-start gap-4 lg:items-end"
-                        : "relative z-10 mt-5 flex flex-col gap-4"
-                    }
+        <div className="md:col-span-8">
+          {services.length === 0 ? (
+            <div className="border-t border-ardosia pt-8">
+              <p className="max-w-[44ch] text-[17px] leading-relaxed text-cinza">
+                A lista de serviços ainda não foi publicada.
+                {whatsappHref ? " Fale com a barbearia para saber valores e horários." : ""}
+              </p>
+              <div className="mt-6 flex flex-wrap items-center gap-x-7 gap-y-3">
+                {whatsappHref && (
+                  <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className={buttonPrimary}>
+                    Chamar no WhatsApp
+                  </a>
+                )}
+                <Link href="/agendar" className={whatsappHref ? textLink : buttonPrimary}>
+                  Ver horários
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <ul className="border-t border-ardosia">
+              {services.map((service) => (
+                <li key={service.id} className="border-b border-ardosia">
+                  <Link
+                    href={`/agendar?servico=${service.id}`}
+                    className="group -mx-4 grid grid-cols-[1fr_auto] items-baseline gap-x-6 gap-y-1 rounded-sm px-4 py-6 transition-colors duration-200 hover:bg-grafite md:grid-cols-[1fr_auto_auto_auto] md:py-7"
                   >
-                    <div
-                      className={`flex items-baseline gap-4 ${isLead ? "" : "w-full justify-between"}`}
-                    >
-                      <span
-                        className={`font-display font-bold text-brand-red ${
-                          isLead ? "text-3xl lg:text-4xl" : "text-xl lg:text-2xl"
-                        }`}
-                      >
+                    <span className="min-w-0">
+                      <span className="block text-[clamp(1.25rem,1.8vw,1.5rem)] leading-tight font-bold [font-stretch:112%] text-white">
+                        {service.name}
+                      </span>
+                      {service.description && (
+                        <span className="mt-1.5 block max-w-[52ch] text-[15px] leading-relaxed text-cinza">
+                          {service.description}
+                        </span>
+                      )}
+                    </span>
+                    <Reveal className="col-start-2 row-start-1 text-right md:col-start-3">
+                      <span className="block text-[clamp(1.25rem,1.8vw,1.5rem)] font-semibold text-white tabular-nums">
                         {formatPrice(service.price)}
                       </span>
-                      <span
-                        className={`font-label text-xs tracking-widest uppercase ${
-                          isLead ? "text-brand-cream/70" : "text-neutral-500"
-                        }`}
-                      >
-                        {formatServiceDuration(service)}
-                      </span>
-                    </div>
-
-                    <Link
-                      href={`/agendar?servico=${service.id}`}
-                      className={`group/cta relative inline-flex w-fit items-center gap-2 font-label text-xs font-medium tracking-widest uppercase transition-colors motion-reduce:transition-none ${
-                        isLead
-                          ? "text-brand-cream hover:text-brand-red"
-                          : "text-brand-black hover:text-brand-red"
-                      }`}
-                    >
+                    </Reveal>
+                    <span className="col-span-2 text-[15px] text-cinza tabular-nums md:col-span-1 md:col-start-2 md:row-start-1 md:text-right">
+                      {formatServiceDuration(service)}
+                    </span>
+                    <span className="hidden text-[15px] font-semibold text-white underline decoration-white/30 underline-offset-[5px] group-hover:decoration-white md:block">
                       Agendar
-                      <span className="transition-transform duration-300 group-hover/cta:translate-x-1 motion-reduce:transition-none">
-                        →
-                      </span>
-                      <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-brand-red transition-transform duration-300 group-hover/cta:scale-x-100 motion-reduce:transition-none" />
-                    </Link>
-                  </div>
-                </article>
-              </Reveal>
-            );
-          })}
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-
-        {hasMore && (
-          <div className="mt-10 flex justify-center sm:hidden">
-            <button
-              type="button"
-              onClick={() => setShowAll((v) => !v)}
-              className="font-label text-xs font-medium tracking-widest text-brand-black uppercase underline decoration-brand-red/40 underline-offset-4 transition-colors hover:text-brand-red"
-            >
-              {showAll ? "Ver menos" : "Ver todos os serviços"}
-            </button>
-          </div>
-        )}
-        </>
-      )}
       </div>
     </section>
   );

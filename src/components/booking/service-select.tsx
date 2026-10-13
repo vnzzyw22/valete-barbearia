@@ -124,7 +124,7 @@ export function ServiceSelect({
         aria-labelledby={`${labelId} ${buttonId}`}
         onClick={() => (open ? closeMenu(false) : openMenu())}
         className={`flex w-full items-center justify-between gap-3 rounded-lg border bg-[#161616] px-3 py-2.5 text-left text-sm text-white transition-colors duration-200 outline-none ${
-          open ? "border-brand-red" : "border-transparent"
+          open ? "border-accent" : "border-transparent"
         }`}
       >
         <span className={selected ? "" : "text-brand-smoke"}>
@@ -154,8 +154,8 @@ export function ServiceSelect({
                 aria-selected={isSelected}
                 onMouseEnter={() => setActiveIndex(i)}
                 onClick={() => selectAt(i)}
-                className={`cursor-pointer px-3 py-2.5 font-nav text-xs font-semibold tracking-wide text-white uppercase transition-colors duration-150 ${
-                  isActive ? "bg-brand-red" : ""
+                className={`cursor-pointer px-3 py-2.5 font-nav text-sm font-semibold transition-colors duration-150 ${
+                  isActive ? "bg-accent text-carvao" : "text-white"
                 }`}
               >
                 {serviceLabel(service)}

@@ -1,195 +1,168 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { motion, useReducedMotion } from "framer-motion";
-import { useEffect, useRef } from "react";
-import { HeroPhotoDeck } from "./hero-photo-deck";
-import { HeroVideoBackground } from "./hero-video-background";
-import type { BusinessSettings, GalleryPhoto } from "@/lib/supabase/types";
+import { useRef, useState, type CSSProperties } from "react";
+import { CardIndex, ValeteLogo } from "./card-index";
+import { HERO_LETTERS } from "./hero-letters";
+import { HeroVideo } from "./hero-video";
+import { buttonPrimary, container, textLink } from "./ui";
 
-interface HeroProps {
-  business: BusinessSettings | null;
-  photos: GalleryPhoto[];
+export type HeroVariant = "a" | "b";
+
+const HEADLINE = "Corte e barba, com hora marcada.";
+const NAV_H = "72px";
+// Altura útil da primeira dobra (sem navbar e respiro vertical).
+const FOLD = `(100svh - ${NAV_H} - 64px)`;
+
+// Entrada em sequência curta (CSS .v-enter em globals.css, desligada com movimento reduzido).
+const delay = (seconds: number, extra?: CSSProperties) =>
+  ({ ...extra, "--v-delay": `${seconds}s` }) as CSSProperties;
+
+function Actions() {
+  return (
+    <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
+      <Link href="/agendar" className={buttonPrimary}>
+        Agendar horário
+      </Link>
+      <a href="#servicos" className={textLink}>
+        Ver serviços
+      </a>
+    </div>
+  );
 }
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.12, delayChildren: 0.15 } },
+// ---------------------------------------------------------------------------
+// A — "VA / LE / TE": contorno branco, vídeo só por dentro das letras.
+// ---------------------------------------------------------------------------
+const lettersMask: CSSProperties = {
+  WebkitMaskImage: "url(/brand/hero-vale-te.svg)",
+  maskImage: "url(/brand/hero-vale-te.svg)",
+  WebkitMaskSize: "100% 100%",
+  maskSize: "100% 100%",
+  WebkitMaskRepeat: "no-repeat",
+  maskRepeat: "no-repeat",
 };
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.9, ease: [0.16, 1, 0.3, 1] as const },
-  },
-};
+function HeroA() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const ratio = HERO_LETTERS.width / HERO_LETTERS.height;
 
-export function Hero({ business, photos }: HeroProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const bgRef = useRef<HTMLDivElement>(null);
-  const reduceMotion = useReducedMotion();
-
-  useEffect(() => {
-    if (reduceMotion || !sectionRef.current) return;
-
-    let cleanup = () => {};
-
-    // gsap (~200KB) e o ScrollTrigger só são usados aqui dentro, depois
-    // da montagem — importar os dois dinamicamente evita que entrem no
-    // bundle inicial da página (fora quando `reduceMotion` já corta o
-    // efeito antes de baixar qualquer coisa).
-    Promise.all([import("gsap"), import("gsap/ScrollTrigger")]).then(
-      ([{ default: gsap }, { ScrollTrigger }]) => {
-        gsap.registerPlugin(ScrollTrigger);
-
-        const ctx = gsap.context(() => {
-          gsap.to(bgRef.current, {
-            yPercent: 18,
-            ease: "none",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top top",
-              end: "bottom top",
-              scrub: true,
-            },
-          });
-        }, sectionRef);
-
-        cleanup = () => ctx.revert();
-      },
-    );
-
-    return () => cleanup();
-  }, [reduceMotion]);
+  const toggle = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    if (v.paused) {
+      v.muted = true;
+      v.play().catch(() => {});
+    } else v.pause();
+  };
 
   return (
-    <section
-      id="topo"
-      ref={sectionRef}
-      className="relative overflow-x-hidden bg-brand-ink pt-16 text-brand-cream"
-    >
-      {/* SEM z-index negativo de propósito: testado isoladamente (página de
-          diagnóstico à parte) e confirmado — nesta combinação de GPU/driver
-          do Chrome, um <video> com z-index negativo em algum ancestral
-          nunca pinta na tela (toca normalmente pela API, currentTime
-          avança, mas fica preto). Sem z-index negativo nenhum, a ordem do
-          DOM já garante o empilhamento correto: este bloco vem primeiro =
-          fica atrás do glow abaixo, que por sua vez fica atrás do
-          conteúdo (`z-20`, mais abaixo). */}
-      <div className="pointer-events-none absolute inset-0">
-        <HeroVideoBackground />
-      </div>
-
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {/* glow radial — inalterado, continua valendo (e sobrepondo o
-            vídeo) tanto no mobile quanto no desktop. */}
-        <div
-          ref={bgRef}
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(50% 45% at 12% 85%, var(--color-brand-oxblood) 0%, transparent 60%)",
-          }}
-        />
-      </div>
-
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="relative z-20 mx-auto flex min-h-[74svh] max-w-[1500px] flex-col px-6 pt-10 pb-14 sm:min-h-[78svh] sm:px-10 sm:pt-12 lg:px-16 min-[1700px]:max-w-none min-[1700px]:px-[6vw]"
-      >
-        <div className="relative">
-          <motion.p
-            variants={fadeUp}
-            className="font-label text-xs tracking-[0.25em] text-brand-smoke uppercase"
+    <section id="topo" className="relative bg-carvao" style={{ paddingTop: NAV_H }}>
+      <h1 className="sr-only">Valete Barbearia — corte e barba</h1>
+      <div className={`${container} grid min-h-[calc(100svh-72px)] content-center gap-10 pt-6 pb-10 lg:grid-cols-12 lg:items-end`}>
+        <div className="lg:col-span-7">
+          <div
+            className="relative"
+            style={{ aspectRatio: `${ratio}`, width: `min(100%, calc(${FOLD} * ${ratio}))` }}
           >
-            Locs · Tranças · Twists
-          </motion.p>
-
-          {/* fora do fluxo: o deque de fotos não pode mais empurrar o
-              título pra baixo reservando altura de flex-row (era isso que
-              impedia o título de subir) */}
-          <div className="pointer-events-none absolute top-0 right-0 sm:pointer-events-auto">
-            {/* decalque real colado ATRÁS da colagem de fotos — como se
-                fizesse parte física dela, pontas escapando pelas bordas
-                (abordagem "integração com as fotos" validada na conversa
-                com o cliente, ver DESIGN.md > Decalque de assinatura).
-                Vem antes no DOM = empilha atrás, sem precisar de z-index. */}
-            <motion.div
-              variants={fadeUp}
-              className="pointer-events-none absolute -top-8 -left-12 hidden w-64 -rotate-[18deg] sm:block sm:w-72 lg:-top-12 lg:-left-16 lg:w-96"
+            <div
+              className="v-fade absolute inset-0 bg-ink"
+              style={delay(0.9, lettersMask)}
             >
-              <Image
-                src="/imagens/decal-locs-01.png"
-                alt=""
-                aria-hidden="true"
-                width={750}
-                height={935}
-                className="h-auto w-full"
+              <HeroVideo
+                videoRef={videoRef}
+                hideControl
+                onPlayingChange={setPlaying}
+                className="h-full w-full object-cover"
               />
-            </motion.div>
-
-            <HeroPhotoDeck
-              photos={photos}
-              triggerRef={sectionRef}
-              reduceMotion={!!reduceMotion}
-            />
+            </div>
+            <svg viewBox={HERO_LETTERS.viewBox} className="absolute inset-0 h-full w-full overflow-visible" aria-hidden="true">
+              <path
+                d={HERO_LETTERS.d}
+                pathLength={1}
+                className="v-draw"
+                fill="none"
+                stroke="#fff"
+                strokeWidth={1.5}
+                vectorEffect="non-scaling-stroke"
+              />
+            </svg>
           </div>
         </div>
 
-        <div className="relative pointer-events-none mt-4 mb-6 lg:mt-6 lg:mb-8">
-          <motion.h1
-            variants={fadeUp}
-            className="font-display leading-[0.82] font-black tracking-tight"
-            style={{ fontSize: "clamp(3.25rem, 12vw, 9.5rem)" }}
+        <div className="flex flex-col items-start gap-7 lg:col-span-5 lg:pb-2">
+          <div className="v-enter" style={delay(0.5)}>
+            <ValeteLogo className="w-[clamp(150px,13vw,200px)]" label="Valete — Cut and Beard" />
+          </div>
+          <p
+            style={delay(0.65)}
+            className="v-enter font-display max-w-[14ch] text-[clamp(1.75rem,2.6vw,2.5rem)] leading-[1.02] font-bold tracking-[-0.01em] text-white"
           >
-            <span className="block text-brand-red">LKAS</span>
-            <span
-              className="mt-1 block text-transparent lg:ml-16"
-              style={{ WebkitTextStroke: "2px var(--color-brand-cream)" }}
-            >
-              LOCS
-            </span>
-          </motion.h1>
-
-          <motion.p
-            variants={fadeUp}
-            className="mt-6 max-w-xs font-label text-xs leading-relaxed tracking-widest text-brand-smoke uppercase lg:ml-16"
+            {HEADLINE}
+          </p>
+          <div className="v-enter" style={delay(0.8)}>
+            <Actions />
+          </div>
+          <button
+            type="button"
+            onClick={toggle}
+            className="min-h-11 text-sm font-medium text-cinza underline decoration-1 underline-offset-4 hover:text-white"
           >
-            {business?.address ?? "Maringá — PR"}
-          </motion.p>
+            {playing ? "Pausar vídeo" : "Tocar vídeo"}
+          </button>
         </div>
-
-        <div className="mt-auto flex flex-wrap items-end justify-between gap-8 pt-8">
-          <motion.div variants={fadeUp} className="flex flex-col gap-3">
-            <span className="font-label text-[11px] tracking-[0.3em] text-brand-smoke uppercase">
-              Agendamento online
-            </span>
-            <Link
-              href="/agendar"
-              className="group inline-flex w-fit items-center gap-3 rounded-full border-2 border-brand-red bg-transparent px-7 py-3.5 font-label text-xs font-medium tracking-widest text-white uppercase transition-all duration-300 ease-in-out hover:bg-brand-red hover:text-white"
-            >
-              Agendar horário
-              <span className="transition-transform group-hover:translate-x-1">
-                →
-              </span>
-            </Link>
-          </motion.div>
-
-          <motion.a
-            variants={fadeUp}
-            href="#servicos"
-            className="hidden flex-col items-center gap-2 font-label text-[10px] tracking-[0.3em] text-brand-smoke uppercase sm:flex"
-          >
-            Explorar
-            <span className="h-10 w-px animate-pulse bg-brand-smoke" />
-          </motion.a>
-        </div>
-      </motion.div>
+      </div>
     </section>
   );
+}
+
+// ---------------------------------------------------------------------------
+// B — logo em destaque + título + CTA; vídeo no painel vertical enquadrado como carta.
+// ---------------------------------------------------------------------------
+function HeroB() {
+  return (
+    <section id="topo" className="relative bg-carvao" style={{ paddingTop: NAV_H }}>
+      <div className={`${container} grid min-h-[calc(100svh-72px)] items-center gap-12 py-8 lg:grid-cols-12`}>
+        <div className="order-2 flex flex-col items-start gap-8 lg:order-1 lg:col-span-6 xl:col-span-7">
+          <h1 className="v-enter" style={delay(0.1)}>
+            <ValeteLogo className="w-[clamp(260px,34vw,520px)]" label="Valete — Cut and Beard" />
+          </h1>
+          <p
+            style={delay(0.3)}
+            className="v-enter font-display max-w-[16ch] text-[clamp(1.75rem,3vw,2.75rem)] leading-[1.02] font-bold tracking-[-0.01em] text-white"
+          >
+            {HEADLINE}
+          </p>
+          <div className="v-enter" style={delay(0.45)}>
+            <Actions />
+          </div>
+        </div>
+
+        <div className="order-1 flex justify-center lg:order-2 lg:col-span-6 lg:justify-end xl:col-span-5">
+          <div
+            className="v-enter relative overflow-hidden rounded-[18px] border border-ardosia bg-ink"
+            style={delay(0, { aspectRatio: "9 / 16", width: `min(100%, calc(${FOLD} * 9 / 16))` })}
+          >
+            <HeroVideo className="absolute inset-0 h-full w-full object-cover" controlClassName="bottom-4 left-4" />
+            {/* véu só nos cantos, para o índice ficar legível sobre o vídeo */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "radial-gradient(circle at 0 0, rgba(10,10,10,.6), transparent 28%), radial-gradient(circle at 100% 100%, rgba(10,10,10,.6), transparent 28%)",
+              }}
+            />
+            <CardIndex className="absolute top-4 left-4" />
+            <CardIndex className="absolute right-4 bottom-4 rotate-180" />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function Hero({ variant }: { variant: HeroVariant }) {
+  return variant === "a" ? <HeroA /> : <HeroB />;
 }

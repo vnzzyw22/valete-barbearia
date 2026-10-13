@@ -1,73 +1,63 @@
-import { AboutSection } from "@/components/site/about-section";
 import { ContactSection } from "@/components/site/contact-section";
-import { FaqSection } from "@/components/site/faq-section";
 import { Footer } from "@/components/site/footer";
-import { GallerySection } from "@/components/site/gallery-section";
-import { Hero } from "@/components/site/hero";
+import { Hero, type HeroVariant } from "@/components/site/hero";
+import { MotionProvider } from "@/components/site/motion-provider";
 import { Navbar } from "@/components/site/navbar";
 import { ServicesSection } from "@/components/site/services-section";
+import { SpaceSection } from "@/components/site/space-section";
+import { TeamSection } from "@/components/site/team-section";
 import { toSchemaOpeningHours } from "@/lib/business-hours";
 import { getSiteUrl } from "@/lib/site-url";
 import {
+  getActiveProfessionals,
   getActiveServices,
   getBusinessSettings,
-  getHeroGalleryPhotos,
   getPublicGalleryPhotos,
 } from "@/lib/supabase/queries";
 
-export default async function Home() {
-  const [business, services, heroPhotos, galleryPhotos] = await Promise.all([
+// Hero em duas versões até o cliente escolher (DESIGN.md > Hero): ?hero=a | ?hero=b.
+const DEFAULT_HERO: HeroVariant = "b";
+
+export default async function Home({ searchParams }: PageProps<"/">) {
+  const params = await searchParams;
+  const variant: HeroVariant = params.hero === "a" ? "a" : params.hero === "b" ? "b" : DEFAULT_HERO;
+
+  const [business, services, professionals, gallery] = await Promise.all([
     getBusinessSettings(),
     getActiveServices(),
-    getHeroGalleryPhotos(),
+    getActiveProfessionals(),
     getPublicGalleryPhotos(),
   ]);
 
-  // Dados estruturados (schema.org HairSalon) — ajuda o Google a entender
-  // que é um negócio local (endereço, telefone, horário), melhora a chance
-  // de aparecer em busca/mapa local. Só monta os campos que a gente
-  // realmente tem; nada inventado.
+  // Dados estruturados de negócio local: só os campos que existem no banco.
   const jsonLd = business
     ? {
         "@context": "https://schema.org",
-        "@type": "HairSalon",
+        "@type": "BarberShop",
         name: business.name,
         url: getSiteUrl(),
         ...(business.address && { address: business.address }),
         ...(business.whatsapp && { telephone: business.whatsapp }),
         ...(Object.keys(business.business_hours ?? {}).length > 0 && {
-          openingHoursSpecification: toSchemaOpeningHours(
-            business.business_hours,
-          ),
+          openingHoursSpecification: toSchemaOpeningHours(business.business_hours),
         }),
       }
     : null;
 
   return (
-    <>
+    <MotionProvider>
       {jsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       )}
       <Navbar />
-      {/* Sanduíche: Hero escura (abertura) -> Serviços/Galeria claras
-          (conteúdo funcional) -> Sobre escura (transição, ecoa a Hero) ->
-          FAQ claro (pausa antes do fechamento) -> Contato + Rodapé escuros
-          (fechamento). Cada seção carrega seu próprio fundo — ver
-          DESIGN.md. Footer fica fora do <main> pra manter o papel de
-          landmark "contentinfo" (perde esse papel se aninhado dentro de
-          main). */}
       <main id="conteudo" className="flex flex-1 flex-col">
-        <Hero business={business} photos={heroPhotos} />
-        <ServicesSection services={services} />
-        <GallerySection photos={galleryPhotos} />
-        <AboutSection />
-        <FaqSection />
+        <Hero variant={variant} />
+        <ServicesSection services={services} whatsapp={business?.whatsapp ?? null} />
+        <TeamSection professionals={professionals} />
+        <SpaceSection gallery={gallery} />
         <ContactSection business={business} />
       </main>
-      <Footer business={business} services={services} />
-    </>
+      <Footer business={business} />
+    </MotionProvider>
   );
 }
