@@ -13,6 +13,7 @@ import {
   normalizePhone,
   startClientSession,
 } from "@/lib/client-auth";
+import { DEMO_ACCESS_CODE } from "@/lib/demo-data";
 import { createServiceClient } from "@/lib/supabase/service";
 
 // Limite de pedidos de código por telefone, para ninguém disparar códigos sem parar.
@@ -29,6 +30,11 @@ export async function requestAccessCode(phoneInput: string): Promise<RequestResu
   }
   const phone = normalizePhone(phoneInput);
   if (!phone) return { ok: false, error: "Informe o WhatsApp com DDD, por exemplo (43) 99999-9999." };
+
+  // Vitrine sem banco: nada é gravado; o código é fixo e aparece na tela.
+  if (getClientLoginMode() === "showcase") {
+    return { ok: true, phoneLabel: formatPhone(phone), demoCode: DEMO_ACCESS_CODE };
+  }
 
   const supabase = createServiceClient();
   if (!supabase) return { ok: false, error: "O acesso à conta ainda não está disponível." };
@@ -71,6 +77,13 @@ export async function verifyAccessCode(phoneInput: string, codeInput: string): P
   const phone = normalizePhone(phoneInput);
   const code = codeInput.replace(/\D/g, "");
   if (!phone || code.length !== 6) return { ok: false, error: "Digite os 6 números do código." };
+
+  if (getClientLoginMode() === "showcase") {
+    if (code !== DEMO_ACCESS_CODE) return { ok: false, error: `Na demonstração, o código é ${DEMO_ACCESS_CODE}.` };
+    await startClientSession(phone);
+    revalidatePath("/minha-conta");
+    return { ok: true };
+  }
 
   const supabase = createServiceClient();
   if (!supabase) return { ok: false, error: "O acesso à conta ainda não está disponível." };

@@ -1,3 +1,4 @@
+import { isSupabaseConfigured } from "./config";
 import { createClient } from "./server";
 import type { AppointmentStatus, PaymentStatus } from "./types";
 
@@ -8,6 +9,7 @@ import type { AppointmentStatus, PaymentStatus } from "./types";
 // Cancela reservas cujo prazo de pagamento venceu, liberando o horário.
 // Idempotente; chamada antes de qualquer leitura de disponibilidade/painel.
 export async function releaseExpiredReservations() {
+  if (!isSupabaseConfigured) return;
   const supabase = await createClient();
   const { error } = await supabase.rpc("release_expired_reservations");
   if (error) {

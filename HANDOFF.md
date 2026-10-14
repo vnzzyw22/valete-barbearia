@@ -4,6 +4,19 @@ Este repositório é a **Valete Barbearia — Cut and Beard**, cópia independen
 O `CLAUDE.md` ainda descreve o Lkas: vale como histórico técnico (arquitetura, lições de bugs),
 **não** como identidade visual. A identidade da Valete está em `DESIGN.md` e `PRODUCT.md`.
 
+## 🪟 Vitrine sem banco (deploy de prévia na Vercel, 2026-10-14)
+
+Decisão do usuário: o deploy é **só um exemplo visual**, sem banco de dados. Sem as variáveis
+`NEXT_PUBLIC_SUPABASE_URL`/`ANON_KEY` o site entra sozinho no modo vitrine:
+- leituras públicas (`queries.ts`) devolvem `src/lib/demo-data.ts` (mesmo conteúdo do
+  `test-data.sql`: dados reais da Valete + barbeiros, preços e cliente fictícios). Ao mudar um, mudar o outro;
+- `/agendar` vai até "Agendamento enviado!" sem gravar nada;
+- Minha conta: qualquer WhatsApp, código fixo **123456** (aparece na tela), conta de exemplo do Marcos;
+- painel: a tela de login avisa que a prévia não tem painel;
+- o proxy pula a sessão do Supabase (`src/lib/supabase/config.ts`).
+Com as variáveis preenchidas, tudo volta a usar o banco, sem mudança de código. Testado com
+`next build` sem `.env.local` (fluxos completos em 390 px) e de novo com o banco local.
+
 ## ⚡⚡⚡ Atualização 2026-10-14, 3ª sessão (nuvem, mais recente): pendências técnicas fechadas
 
 Feito e conferido com Playwright contra `next build` + `next start` e o banco local (`up.sh`):

@@ -1,5 +1,7 @@
 import { HERO_GALLERY_CATEGORIES } from "@/lib/gallery-categories";
 import type { BusyRange } from "@/lib/scheduling";
+import { DEMO_BUSINESS, DEMO_PLANS, DEMO_PROFESSIONALS, DEMO_SERVICES } from "@/lib/demo-data";
+import { isSupabaseConfigured } from "./config";
 import { createClient } from "./server";
 import type {
   BusinessSettings,
@@ -14,9 +16,11 @@ const SERVICE_COLUMNS =
   "id, name, description, price, duration_minutes, image_url, hair_durations:service_hair_durations(hair_length, duration_minutes)";
 
 // Leituras públicas do site (RLS: anon só vê o que é destinado ao público).
+// Sem Supabase configurado (prévia/vitrine), cada leitura devolve os dados de src/lib/demo-data.ts.
 // Usadas em Server Components — sem cache manual, o Next já cuida do request.
 
 export async function getBusinessSettings(): Promise<BusinessSettings | null> {
+  if (!isSupabaseConfigured) return DEMO_BUSINESS;
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("business_settings")
@@ -34,6 +38,7 @@ export async function getBusinessSettings(): Promise<BusinessSettings | null> {
 }
 
 export async function getActiveServices(): Promise<Service[]> {
+  if (!isSupabaseConfigured) return DEMO_SERVICES;
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("services")
@@ -52,6 +57,7 @@ export async function getActiveServices(): Promise<Service[]> {
 export async function getActiveServiceById(
   id: string,
 ): Promise<Service | null> {
+  if (!isSupabaseConfigured) return DEMO_SERVICES.find((s) => s.id === id) ?? null;
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("services")
@@ -74,6 +80,7 @@ export async function getBusySlots(
   fromISO: string,
   toISO: string,
 ): Promise<BusyRange[]> {
+  if (!isSupabaseConfigured) return [];
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("busy_slots")
@@ -97,6 +104,7 @@ export async function getBusySlots(
 // só vê ativos). Ordem = ordem de exibição do painel, que também é a ordem de
 // preferência quando o cliente escolhe "qualquer profissional".
 export async function getActiveProfessionals(): Promise<Professional[]> {
+  if (!isSupabaseConfigured) return DEMO_PROFESSIONALS;
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("professionals")
@@ -120,6 +128,7 @@ export async function getActiveProfessionals(): Promise<Professional[]> {
 
 // Fotos com categoria "hero"/"topo" — só o leque/fileira da Hero.
 export async function getHeroGalleryPhotos(): Promise<GalleryPhoto[]> {
+  if (!isSupabaseConfigured) return [];
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("gallery_photos")
@@ -139,6 +148,7 @@ export async function getHeroGalleryPhotos(): Promise<GalleryPhoto[]> {
 // Todas as fotos publicadas, exceto as marcadas pra Hero (categoria
 // null ou qualquer categoria que não seja "hero"/"topo").
 export async function getPublicGalleryPhotos(): Promise<GalleryPhoto[]> {
+  if (!isSupabaseConfigured) return [];
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("gallery_photos")
@@ -159,6 +169,7 @@ export async function getPublicGalleryPhotos(): Promise<GalleryPhoto[]> {
 
 // Planos de assinatura ativos (seção Assinaturas). O destaque vem primeiro.
 export async function getActivePlans(): Promise<Plan[]> {
+  if (!isSupabaseConfigured) return DEMO_PLANS;
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("plans")

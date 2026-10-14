@@ -1,3 +1,5 @@
+import { getDemoPortal } from "@/lib/demo-data";
+import { isSupabaseConfigured } from "./config";
 import { createServiceClient } from "./service";
 import type { AppointmentStatus, PaymentStatus, SubscriptionStatus, Weekday } from "./types";
 
@@ -54,6 +56,8 @@ interface SubscriptionRow {
 }
 
 export async function getClientPortal(phone: string): Promise<ClientPortal | null> {
+  // Vitrine sem banco: qualquer telefone vê a conta de exemplo.
+  if (!isSupabaseConfigured) return getDemoPortal();
   const supabase = createServiceClient();
   if (!supabase) return null;
 

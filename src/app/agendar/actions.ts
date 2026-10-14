@@ -1,5 +1,6 @@
 "use server";
 
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import {
   getActiveProfessionals,
@@ -201,6 +202,38 @@ export async function createAppointment(
     new Date(startsAt).getTime() + durationMinutes * 60_000,
   ).toISOString();
 
+  // Resumo + link do WhatsApp da tela final (usado também pela vitrine sem banco).
+  const bookingSuccess = (professional: (typeof free)[number], paymentPath: string | null) => {
+    const dateLabel = new Date(`${input.dateISO}T00:00:00-03:00`).toLocaleDateString(
+      "pt-BR",
+      { timeZone: "America/Sao_Paulo" },
+    );
+    const timeRange = timeRangeLabel(startsAt, durationMinutes);
+
+    const whatsappLink = getWhatsappLink(
+      business.whatsapp,
+      buildBookingMessage({
+        clientName: name,
+        serviceName: service.name,
+        professionalName: eligible.length > 1 ? professional.name : undefined,
+        hairLengthLabel: storedHairLength
+          ? HAIR_LENGTH_LABELS[storedHairLength]
+          : undefined,
+        dateLabel,
+        timeLabel: timeRange,
+        notes,
+      }),
+    );
+
+    return {
+      ok: true as const,
+      whatsappLink,
+      professionalName: professional.name,
+      timeRange,
+      paymentPath,
+    };
+  };
+
   const supabase = await createClient();
 
   // Sem .select() no insert: clients não tem policy de SELECT pra anon (só
@@ -212,6 +245,13 @@ export async function createAppointment(
   // tela de pagamento sem ler a linha de volta.
   const appointmentId = crypto.randomUUID();
   const deposit = getDepositConfig(business);
+
+  // Vitrine sem banco: o fluxo vai até o fim, mas nada é gravado (o horário fica com o
+  // primeiro profissional livre).
+  if (!isSupabaseConfigured) {
+    return bookingSuccess(free[0], null);
+  }
+
   const { error: clientError } = await supabase
     .from("clients")
     .insert({ id: clientId, name, whatsapp });
@@ -261,32 +301,5 @@ export async function createAppointment(
     };
   }
 
-  const dateLabel = new Date(`${input.dateISO}T00:00:00-03:00`).toLocaleDateString(
-    "pt-BR",
-    { timeZone: "America/Sao_Paulo" },
-  );
-  const timeRange = timeRangeLabel(startsAt, durationMinutes);
-
-  const whatsappLink = getWhatsappLink(
-    business.whatsapp,
-    buildBookingMessage({
-      clientName: name,
-      serviceName: service.name,
-      professionalName: eligible.length > 1 ? booked.name : undefined,
-      hairLengthLabel: storedHairLength
-        ? HAIR_LENGTH_LABELS[storedHairLength]
-        : undefined,
-      dateLabel,
-      timeLabel: timeRange,
-      notes,
-    }),
-  );
-
-  return {
-    ok: true,
-    whatsappLink,
-    professionalName: booked.name,
-    timeRange,
-    paymentPath: deposit ? `/agendar/pagamento/${appointmentId}` : null,
-  };
+  return bookingSuccess(booked, deposit ? `/agendar/pagamento/${appointmentId}` : null);
 }

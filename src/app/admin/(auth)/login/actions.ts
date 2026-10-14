@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 
 export type LoginState = { error: string | null };
@@ -14,6 +15,10 @@ export async function login(
 
   if (typeof email !== "string" || typeof password !== "string" || !email || !password) {
     return { error: "Informe email e senha." };
+  }
+
+  if (!isSupabaseConfigured) {
+    return { error: "Esta é uma prévia do site, sem banco de dados: o painel não está disponível." };
   }
 
   const supabase = await createClient();

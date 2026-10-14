@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { cookies } from "next/headers";
 import { normalizePhone } from "@/lib/phone";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 export { formatPhone, normalizePhone } from "@/lib/phone";
 
@@ -19,11 +20,14 @@ const SESSION_DAYS = 30;
 export const CODE_TTL_MINUTES = 10;
 export const CODE_MAX_ATTEMPTS = 5;
 
-export type ClientLoginMode = "demo" | "unavailable";
+// "showcase": prévia sem banco — código fixo na tela e conta de exemplo (src/lib/demo-data.ts).
+export type ClientLoginMode = "showcase" | "demo" | "unavailable";
 
 function secret() {
   const value = process.env.CLIENT_SESSION_SECRET ?? "";
-  return value.length >= 32 ? value : null;
+  if (value.length >= 32) return value;
+  // Na vitrine o cookie só abre a conta de exemplo (nenhum dado real): segredo fixo basta.
+  return isSupabaseConfigured ? null : "vitrine-valete-sem-dados-reais-0000000000";
 }
 
 function isLocalDatabase() {
@@ -36,6 +40,7 @@ function isLocalDatabase() {
 }
 
 export function getClientLoginMode(): ClientLoginMode {
+  if (!isSupabaseConfigured) return "showcase";
   if (!secret() || !process.env.SUPABASE_SERVICE_ROLE_KEY) return "unavailable";
   if (process.env.CLIENT_LOGIN_DEMO === "true" && isLocalDatabase()) return "demo";
   return "unavailable";
