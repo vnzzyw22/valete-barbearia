@@ -60,8 +60,10 @@ export function MonthlyTrendChart({ monthlyTotals }: MonthlyTrendChartProps) {
   const [hover, setHover] = useState<HoverInfo | null>(null);
   const [showTable, setShowTable] = useState(false);
 
+  // Sem lançamentos o máximo é 0 e niceCeiling devolve o eixo padrão (R$ 100). Com piso 1, o
+  // eixo virava 0–1 e os ticks arredondados se repetiam (0, 0, 1, 1, 1): chave React duplicada.
   const maxValue = Math.max(
-    1,
+    0,
     ...monthlyTotals.flatMap((m) => [m.income, m.expense]),
   );
   const axisMax = niceCeiling(maxValue);
@@ -80,7 +82,7 @@ export function MonthlyTrendChart({ monthlyTotals }: MonthlyTrendChartProps) {
   return (
     <div className="rounded-lg border border-white/10 bg-[#1a1a1a] p-5">
       <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-        <span className="font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+        <span className="font-nav text-sm font-semibold text-white/40">
           Entradas × Saídas — últimos {monthlyTotals.length} meses
         </span>
         <div className="flex items-center gap-4">
@@ -117,13 +119,13 @@ export function MonthlyTrendChart({ monthlyTotals }: MonthlyTrendChartProps) {
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="py-2 pr-4 font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="py-2 pr-4 font-nav text-sm font-semibold text-white/40">
                   Mês
                 </th>
-                <th className="py-2 pr-4 text-right font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="py-2 pr-4 text-right font-nav text-sm font-semibold text-white/40">
                   Entradas
                 </th>
-                <th className="py-2 text-right font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="py-2 text-right font-nav text-sm font-semibold text-white/40">
                   Saídas
                 </th>
               </tr>

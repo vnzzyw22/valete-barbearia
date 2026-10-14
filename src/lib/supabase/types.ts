@@ -126,3 +126,35 @@ export interface AdminTransaction {
   description: string | null;
   occurred_at: string;
 }
+
+// Assinaturas (supabase/migrations/20261014120000_assinaturas_minha_conta.sql).
+export type Weekday = "mon" | "tue" | "wed" | "thu" | "fri" | "sat" | "sun";
+
+export interface Plan {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  // Dias em que o plano vale; null = sem restrição de dia.
+  weekdays: Weekday[] | null;
+  featured: boolean;
+}
+
+export interface AdminPlan extends Plan {
+  active: boolean;
+  display_order: number;
+}
+
+export type SubscriptionStatus = "active" | "paused" | "cancelled";
+
+export interface AdminSubscription {
+  id: string;
+  plan_id: string;
+  client_name: string;
+  // Telefone nacional (DDD + número, só dígitos).
+  client_whatsapp: string;
+  status: SubscriptionStatus;
+  started_at: string;
+  renews_at: string | null;
+  notes: string | null;
+}

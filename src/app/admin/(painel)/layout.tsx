@@ -41,7 +41,7 @@ export default async function PainelLayout({
           <form action={logout} className="border-t border-white/10 p-2">
             <button
               type="submit"
-              className="w-full rounded-md px-3 py-2 text-left font-nav text-xs font-bold tracking-widest text-white/60 uppercase transition-colors duration-200 hover:bg-white/5 hover:text-accent"
+              className="w-full rounded-md px-3 py-2 text-left font-nav text-sm font-semibold text-white/60 transition-colors duration-200 hover:bg-white/5 hover:text-accent"
             >
               Sair
             </button>

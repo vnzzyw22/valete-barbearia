@@ -47,7 +47,7 @@ const fieldClass =
   "rounded-lg border border-transparent bg-white/[0.06] px-3 py-2.5 text-sm text-white [color-scheme:dark] transition-colors duration-200 outline-none focus:border-accent";
 
 const labelClass =
-  "font-label text-xs font-bold tracking-widest text-white uppercase";
+  "font-label text-sm font-semibold text-white";
 
 // Mesmo visual dos blocos de horário — usado também nas opções de tamanho e
 // de profissional, pra etapa nova parecer parte do mesmo formulário.
@@ -171,7 +171,7 @@ export function BookingSummary({ rows }: { rows: SummaryRow[] }) {
     <dl className="flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.04] p-5 text-left text-sm sm:grid sm:grid-cols-[auto_1fr] sm:gap-x-6 sm:gap-y-2">
       {rows.map((row) => (
         <div key={row.label} className="flex flex-col gap-0.5 sm:contents">
-          <dt className="font-label text-xs font-bold tracking-widest text-brand-smoke uppercase">
+          <dt className="font-label text-sm font-semibold text-brand-smoke">
             {row.label}
           </dt>
           <dd className="text-white">{row.value}</dd>
@@ -338,7 +338,7 @@ export function BookingForm({
   if (success) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-xl border border-white/10 bg-white/[0.04] p-8 text-center">
-        <h2 className="font-display text-lg font-bold text-white uppercase">
+        <h2 className="font-display text-lg font-bold text-white">
           Agendamento enviado!
         </h2>
         <p className="text-sm text-brand-smoke">

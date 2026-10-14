@@ -5,8 +5,10 @@ import type {
   AdminBlockedSlot,
   AdminClient,
   AdminGalleryPhoto,
+  AdminPlan,
   AdminProfessional,
   AdminService,
+  AdminSubscription,
   AdminTransaction,
 } from "./types";
 
@@ -191,4 +193,35 @@ export async function countPaymentsAwaitingConfirmation(): Promise<number> {
   }
 
   return count ?? 0;
+}
+
+// Assinaturas: todos os planos (inclusive inativos) e todos os assinantes.
+export async function getAllPlans(): Promise<AdminPlan[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("plans")
+    .select("id, name, description, price, weekdays, featured, active, display_order")
+    .order("display_order", { ascending: true });
+
+  if (error) {
+    console.error("Erro ao buscar plans (admin):", error.message);
+    return [];
+  }
+
+  return data;
+}
+
+export async function getAllSubscriptions(): Promise<AdminSubscription[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("subscriptions")
+    .select("id, plan_id, client_name, client_whatsapp, status, started_at, renews_at, notes")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Erro ao buscar subscriptions (admin):", error.message);
+    return [];
+  }
+
+  return data;
 }

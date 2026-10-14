@@ -39,13 +39,13 @@ function phaseOf(snapshot: PaymentSnapshot): Phase {
 const POLL_MS = 15_000;
 
 const labelClass =
-  "font-label text-xs font-bold tracking-widest text-brand-smoke uppercase";
+  "font-label text-sm font-semibold text-brand-smoke";
 
 const primaryButtonClass =
   "inline-flex w-full items-center justify-center rounded-full bg-accent px-6 py-4 text-center text-sm font-bold text-carvao transition hover:opacity-90";
 
 const secondaryButtonClass =
-  "inline-flex w-full items-center justify-center rounded-full border border-white/20 px-6 py-4 text-center text-sm font-bold tracking-widest text-white uppercase transition hover:border-accent";
+  "inline-flex w-full items-center justify-center rounded-full border border-white/20 px-6 py-4 text-center text-sm font-bold text-white transition hover:border-accent";
 
 function formatClock(totalSeconds: number) {
   const minutes = Math.floor(totalSeconds / 60);
@@ -232,7 +232,7 @@ export function PaymentPanel({
 
         {phase === "pay" && (
           <>
-            <h1 className="font-display text-2xl font-black text-white uppercase sm:text-3xl">
+            <h1 className="font-display text-2xl font-black text-white sm:text-3xl">
               Seu horário foi <span className="text-accent">reservado</span>
             </h1>
             <p className="text-sm text-brand-smoke">
@@ -245,7 +245,7 @@ export function PaymentPanel({
 
         {phase === "review" && (
           <>
-            <h1 className="font-display text-2xl font-black text-white uppercase sm:text-3xl">
+            <h1 className="font-display text-2xl font-black text-white sm:text-3xl">
               Comprovante <span className="text-accent">enviado?</span>
             </h1>
             <p className="text-sm leading-relaxed text-brand-smoke">
@@ -257,7 +257,7 @@ export function PaymentPanel({
 
         {phase === "confirmed" && (
           <>
-            <h1 className="font-display text-2xl font-black text-white uppercase sm:text-3xl">
+            <h1 className="font-display text-2xl font-black text-white sm:text-3xl">
               Horário <span className="text-accent">confirmado</span>
             </h1>
             <p className="text-sm leading-relaxed text-brand-smoke">
@@ -268,7 +268,7 @@ export function PaymentPanel({
 
         {phase === "expired" && (
           <>
-            <h1 className="font-display text-2xl font-black text-white uppercase sm:text-3xl">
+            <h1 className="font-display text-2xl font-black text-white sm:text-3xl">
               A reserva <span className="text-accent">expirou</span>
             </h1>
             <p className="text-sm leading-relaxed text-brand-smoke">
@@ -282,7 +282,7 @@ export function PaymentPanel({
 
         {phase === "cancelled" && (
           <>
-            <h1 className="font-display text-2xl font-black text-white uppercase sm:text-3xl">
+            <h1 className="font-display text-2xl font-black text-white sm:text-3xl">
               Agendamento <span className="text-accent">cancelado</span>
             </h1>
             <p className="text-sm leading-relaxed text-brand-smoke">
@@ -332,7 +332,7 @@ export function PaymentPanel({
           <section aria-labelledby="sinal-titulo" className="flex flex-col gap-2">
             <h2
               id="sinal-titulo"
-              className="font-display text-lg font-bold text-white uppercase"
+              className="font-display text-lg font-bold text-white"
             >
               Falta apenas confirmar o sinal
             </h2>
@@ -349,7 +349,7 @@ export function PaymentPanel({
             <li className="flex gap-4">
               <StepMark n={1} />
               <div className="flex min-w-0 flex-1 flex-col gap-3">
-                <h3 className="font-display text-sm font-bold text-white uppercase">
+                <h3 className="font-display text-sm font-bold text-white">
                   Faça o Pix
                 </h3>
                 <p className="text-sm text-brand-smoke">
@@ -394,7 +394,7 @@ export function PaymentPanel({
             <li className="flex gap-4">
               <StepMark n={2} />
               <div className="flex min-w-0 flex-1 flex-col gap-3">
-                <h3 className="font-display text-sm font-bold text-white uppercase">
+                <h3 className="font-display text-sm font-bold text-white">
                   Confira o valor
                 </h3>
                 <p className="text-sm text-brand-smoke">
@@ -410,7 +410,7 @@ export function PaymentPanel({
             <li className="flex gap-4">
               <StepMark n={3} />
               <div className="flex min-w-0 flex-1 flex-col gap-3">
-                <h3 className="font-display text-sm font-bold text-white uppercase">
+                <h3 className="font-display text-sm font-bold text-white">
                   Envie o comprovante
                 </h3>
                 <p className="text-sm leading-relaxed text-brand-smoke">

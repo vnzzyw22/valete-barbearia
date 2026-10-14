@@ -195,7 +195,7 @@ export function ServicesManager({ services, professionals }: ServicesManagerProp
           onSubmit={handleSubmit}
           className={`flex max-w-lg flex-col gap-4 ${cardClass}`}
         >
-          <h2 className="font-nav text-sm font-bold tracking-widest text-white uppercase">
+          <h2 className="font-nav text-sm font-bold text-white">
             {editingId === "new" ? "Novo serviço" : "Editar serviço"}
           </h2>
 

@@ -38,13 +38,14 @@ export function ValeteLogo({ className, label = "Valete — Cut and Beard" }: { 
   );
 }
 
-// Índice de canto de carta: "V" + naipe. Gesto único do site (DESIGN.md > Conceito): só no
-// painel do vídeo da Hero B.
-export function CardIndex({ className }: { className?: string }) {
+// Índice de canto de carta: "V" + naipe (DESIGN.md > Conceito). Aparece em dois lugares: no
+// painel do vídeo da Hero B ("dark": V branco, naipe em latão) e na face branca da carta do
+// plano em destaque, em Assinaturas ("face": tudo em carvão, como numa carta de verdade).
+export function CardIndex({ className, tone = "dark" }: { className?: string; tone?: "dark" | "face" }) {
   return (
     <span aria-hidden="true" className={`flex flex-col items-center gap-1 leading-none ${className ?? ""}`}>
-      <span className="font-display text-[22px] font-black text-white">V</span>
-      <Spade className="w-[12px] bg-latao" />
+      <span className={`font-display text-[22px] font-black ${tone === "face" ? "text-carvao" : "text-white"}`}>V</span>
+      <Spade className={`w-[12px] ${tone === "face" ? "bg-carvao" : "bg-latao"}`} />
     </span>
   );
 }

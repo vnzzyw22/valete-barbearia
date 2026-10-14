@@ -4,7 +4,59 @@ Este repositório é a **Valete Barbearia — Cut and Beard**, cópia independen
 O `CLAUDE.md` ainda descreve o Lkas: vale como histórico técnico (arquitetura, lições de bugs),
 **não** como identidade visual. A identidade da Valete está em `DESIGN.md` e `PRODUCT.md`.
 
-## ⚡ Atualização 2026-10-14 (sessão no desktop): leia isto primeiro
+## ⚡⚡ Atualização 2026-10-14, 2ª sessão no desktop (mais recente): leia isto primeiro
+
+Projeto é **demo/prévia**: sem Supabase por enquanto (decisão do usuário). Tudo roda no banco local.
+
+### Feito e conferido no Chrome (desktop e ~500 px)
+- **Dados reais aplicados no seed:** WhatsApp +55 43 99938-3149 e horário (seg 10–18, ter–sex 9–20,
+  sáb 8:30–18, dom fechado). ⚠️ O usuário colou o endereço **Rua Nova Ucrânia, 309**, mas o cliente
+  tinha dito que a sede atual é a **Rua Orquídea, 626** (Nova Ucrânia = anterior). Mantida a Orquídea;
+  **confirmar com o cliente**.
+- **Assinaturas** (nova, logo depois da Hero, carro-chefe): planos reais Corte + barba ilimitado
+  R$ 139,99 (destaque), Corte ilimitado seg–qua R$ 74,99, Barba seg–qui R$ 79,99. "Por mês" é suposição
+  (**confirmar**). Assinar = WhatsApp. Painel → **Assinaturas** (planos e assinantes).
+- **Minha conta** (\`/minha-conta\`): login por WhatsApp + código de 6 dígitos (HMAC, 10 min, 5
+  tentativas, 3 códigos/15 min) e cookie assinado httpOnly de 30 dias. Mostra próximo horário
+  (adicionar à agenda .ics, remarcar pelo WhatsApp, pagar sinal), plano (carta de bolso, renovação,
+  atendimentos no ciclo), histórico com "Agendar de novo" e "Sair". Leitura pelo servidor com a chave
+  \`service_role\` (view \`client_phones\`, sem acesso para anon/authenticated).
+  - ⚠️ **Não há envio do código por WhatsApp.** Com \`CLIENT_LOGIN_DEMO=true\` + banco local, o código
+    aparece na tela. Fora disso o acesso fica "indisponível". Antes de produção: integrar a API do
+    WhatsApp (ou SMS) em \`src/app/minha-conta/actions.ts > requestAccessCode\`.
+  - Demo: entrar com **(43) 90000-0001** (Marcos Vinícius, assinante do plano principal).
+- **Migration aditiva** \`20261014120000_assinaturas_minha_conta.sql\` (+ rollback): \`plans\`,
+  \`subscriptions\`, \`client_login_codes\`, view \`client_phones\`, função \`phone_national\`.
+- **Dados de demonstração** (\`scripts/local-db/test-data.sql\`, datas relativas ao dia): 4 barbeiros
+  fictícios (Rafael, Bruno, Diego, Thiago), 6 serviços com nomes reais e **preços fictícios**, 20
+  clientes, ~1.060 agendamentos (60 dias atrás, 10 à frente), 8 assinantes, caixa de 6 meses.
+- **"A casa" → "Os artistas"** com texto sobre a equipe (sem fatos inventados: nada de anos, nomes
+  ou quantidade). **"O espaço" → "O trabalho"**, recomposto em layout editorial (as fotos são do
+  trabalho, não do salão).
+- **Movimento** (DESIGN.md > Movimento): carta que é dada virada e vira para a face + inclinação 3D
+  no mouse; títulos por máscara; fios das listas se desenhando; cortina nas fotos; saída da Hero no
+  scroll. Tudo respeita \`prefers-reduced-motion\`.
+- Hero: borrão um pouco menor (0,92 × altura, transição em 32%); véu no topo para os links.
+- Painel e agendamento sem rótulos em caixa-alta espaçada (DESIGN.md); bug do gráfico do financeiro
+  com mês vazio corrigido (chaves duplicadas).
+- \`tsc\` e lint limpos. Console sem erros nas telas visitadas.
+
+### Ambiente (Windows)
+- \`.env.local\` ganhou \`SUPABASE_SERVICE_ROLE_KEY\` (local), \`CLIENT_SESSION_SECRET\` e
+  \`CLIENT_LOGIN_DEMO=true\`. \`up.mjs\`/\`up.sh\` agora imprimem também a chave service_role.
+- ⚠️ Dois PostgREST na mesma porta 3011 (um de sessão anterior) davam 404 aleatório em insert. Antes
+  de subir outro, conferir \`netstat -ano | grep :3011\`.
+- \`tsc\` pode estourar memória com o dev server aberto: \`NODE_OPTIONS=--max-old-space-size=1536\`.
+
+### Pendente
+1. Confirmar endereço (Orquídea × Nova Ucrânia) e se os planos são mensais.
+2. Envio real do código da Minha conta (API do WhatsApp/SMS).
+3. Rodar \`impeccable\`, \`web-design-guidelines\` e \`quality-gate-visual\` sobre esta rodada.
+4. Seção Equipe ("Equipe", com foto de profissional) fica ao lado de "Os artistas" quando houver
+   fotos: decidir se vira parte de Os artistas.
+5. Itens antigos abaixo continuam valendo (Hero A a remover, textos legais, Supabase próprio etc.).
+
+## ⚡ Atualização 2026-10-14 (sessão no desktop)
 
 Interrompida a pedido do usuário. **O que vem abaixo de "Repositórios" é o estado de 2026-10-13.**
 

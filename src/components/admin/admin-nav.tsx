@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: "/admin/agenda", label: "Agenda" },
   { href: "/admin/pagamentos", label: "Pagamentos" },
   { href: "/admin/clientes", label: "Clientes" },
+  { href: "/admin/assinaturas", label: "Assinaturas" },
   { href: "/admin/servicos", label: "Serviços" },
   { href: "/admin/profissionais", label: "Profissionais" },
   { href: "/admin/galeria", label: "Galeria" },
@@ -66,7 +67,7 @@ export function AdminNav({ initialPendingPayments }: AdminNavProps) {
           <Link
             key={item.href}
             href={item.href}
-            className={`flex items-center justify-between gap-2 whitespace-nowrap rounded-md px-3 py-2 font-nav text-xs font-bold tracking-widest uppercase transition-colors duration-200 ${
+            className={`flex items-center justify-between gap-2 whitespace-nowrap rounded-md px-3 py-2 font-nav text-sm font-semibold transition-colors duration-200 ${
               active
                 ? "bg-accent text-carvao"
                 : "text-white/60 hover:bg-white/5 hover:text-white"

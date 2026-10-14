@@ -3,13 +3,18 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
-import { Reveal } from "./reveal";
+import { TitleReveal } from "./motion";
 import { container, sectionTitle } from "./ui";
 
-// Texto sobre a barbearia: ainda não recebido do cliente (história, desde quando, o que a casa
-// valoriza). Enquanto for null, a seção mostra um placeholder explícito — nada inventado.
-// Para publicar, troque por um array de parágrafos reais.
-const ABOUT_PARAGRAPHS: string[] | null = null;
+// "Os artistas" (pedido do usuário em 2026-10-14, antes "A casa"): texto sobre a equipe de
+// barbeiros escrito a partir do que é real — os serviços informados pelo cliente e a escolha do
+// profissional no agendamento. Sem anos de experiência, nomes ou número de barbeiros: isso só
+// entra quando o cliente confirmar. Com null, volta o placeholder explícito.
+const ABOUT_PARAGRAPHS: string[] | null = [
+  "Na Valete, cada barbeiro tem o seu traço, e todos seguem o mesmo cuidado: ouvir antes de cortar, acertar o acabamento e entregar um visual que combina com você.",
+  "Além do corte e da barba, a equipe faz terapia capilar e visagismo, a leitura do formato do rosto para indicar o corte e a barba que mais valorizam os seus traços.",
+  "Tem um barbeiro de confiança? No agendamento você escolhe com quem quer cortar.",
+];
 
 // Recorte 10:11 com ancoragem no topo: tira da foto a faixa inferior onde fica a marca d'água
 // do bigode (as fotos vêm do Instagram da casa com ela no centro da base).
@@ -23,18 +28,15 @@ export function AboutSection() {
   const scale = useTransform(scrollYProgress, [0, 1], [1.12, 1]);
 
   return (
-    <section id="sobre" aria-labelledby="sobre-titulo" className="scroll-mt-[72px] bg-carvao py-20 md:py-32">
+    <section id="artistas" aria-labelledby="artistas-titulo" className="scroll-mt-[72px] bg-carvao py-20 md:py-32">
       <div className={`${container} grid gap-12 lg:grid-cols-12 lg:gap-10`}>
         <div className="flex flex-col lg:col-span-5 lg:pt-6">
-          <Reveal>
-            <h2 id="sobre-titulo" className={sectionTitle}>
-              A casa
-            </h2>
-          </Reveal>
+          <h2 id="artistas-titulo" className={sectionTitle}>
+            <TitleReveal>Os artistas</TitleReveal>
+          </h2>
 
-          {/* Informado pelo cliente em 2026-10-14. Preços e durações vêm de `services` (painel). */}
-          <p className="font-display mt-8 max-w-[24ch] text-[clamp(1.375rem,2vw,1.75rem)] leading-[1.2] font-bold text-white">
-            Corte de cabelo, alinhamento de barba, terapia capilar e visagismo.
+          <p className="font-display mt-8 max-w-[22ch] text-[clamp(1.375rem,2vw,1.75rem)] leading-[1.2] font-bold text-white">
+            A equipe que cuida do seu corte e da sua barba, do primeiro ao último detalhe.
           </p>
 
           {ABOUT_PARAGRAPHS ? (
@@ -67,7 +69,7 @@ export function AboutSection() {
               />
             </motion.div>
           </div>
-          <figcaption className="mt-4 text-[15px] text-cinza">A equipe da Valete.</figcaption>
+          <figcaption className="mt-4 text-[15px] text-cinza">Os artistas da Valete.</figcaption>
         </figure>
       </div>
     </section>

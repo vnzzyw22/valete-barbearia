@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { useRef, useState, type CSSProperties } from "react";
 import { CardIndex, ValeteLogo } from "./card-index";
@@ -24,8 +25,8 @@ function Actions() {
       <Link href="/agendar" className={buttonPrimary}>
         Agendar horário
       </Link>
-      <a href="#servicos" className={textLink}>
-        Ver serviços
+      <a href="#assinaturas" className={textLink}>
+        Ver assinaturas
       </a>
     </div>
   );
@@ -130,6 +131,13 @@ function HeroB() {
   const sharpRef = useRef<HTMLVideoElement>(null);
   const blurRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  // Saída no scroll: o conteúdo sobe devagar e esmaece enquanto a Hero sai da tela; o vídeo
+  // nítido ganha um zoom leve. Desligado com movimento reduzido (.hero-scroll-exit no CSS).
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+  const contentY = useTransform(scrollYProgress, [0, 1], [0, -140]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
+  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
 
   // Um controle só para as duas camadas (WCAG 2.2.2).
   const toggle = () => {
@@ -144,7 +152,7 @@ function HeroB() {
   };
 
   return (
-    <section id="topo" className="relative isolate min-h-[100svh] overflow-hidden bg-ink">
+    <section ref={sectionRef} id="topo" className="relative isolate min-h-[100svh] overflow-hidden bg-ink">
       {/* 1. fundo desfocado */}
       <div aria-hidden="true" className="hero-b-blur absolute inset-0">
         <HeroVideo
@@ -158,12 +166,14 @@ function HeroB() {
 
       {/* 2. vídeo nítido, deslocado para a direita */}
       <div aria-hidden="true" className="hero-b-sharp v-fade absolute inset-y-0 right-0" style={delay(0.15)}>
+        <motion.div className="hero-scroll-exit h-full w-full" style={{ scale: videoScale }}>
         <HeroVideo
           videoRef={sharpRef}
           hideControl
           onPlayingChange={setPlaying}
           className="h-full w-full object-cover"
         />
+        </motion.div>
       </div>
 
       {/* véu de leitura: leve, só onde há texto (esquerda no desktop, base no mobile) */}
@@ -174,7 +184,10 @@ function HeroB() {
         style={{ paddingTop: `calc(${NAV_H} + 32px)` }}
       >
         <CardIndex className="absolute top-[calc(72px+28px)] left-[clamp(20px,5vw,80px)] hidden lg:flex" />
-        <div className="flex max-w-[600px] flex-col items-start gap-8">
+        <motion.div
+          className="hero-scroll-exit flex max-w-[600px] flex-col items-start gap-8"
+          style={{ y: contentY, opacity: contentOpacity }}
+        >
           <h1 className="v-enter" style={delay(0.1)}>
             <ValeteLogo className="w-[clamp(240px,34vw,520px)]" label="Valete — Cut and Beard" />
           </h1>
@@ -187,7 +200,7 @@ function HeroB() {
           <div className="v-enter" style={delay(0.45)}>
             <Actions />
           </div>
-        </div>
+        </motion.div>
       </div>
 
       {/* canto inferior direito da "carta", na mesma coluna do conteúdo (em 1920 px não encosta na borda) */}

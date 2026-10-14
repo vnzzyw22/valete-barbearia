@@ -1,6 +1,6 @@
 import Image from "next/image";
 import type { Professional } from "@/lib/supabase/types";
-import { Reveal } from "./reveal";
+import { TitleReveal } from "./motion";
 import { container, sectionTitle } from "./ui";
 
 // Só aparece com profissional ativo que tenha foto cadastrada no painel (DESIGN.md > Seções).
@@ -11,11 +11,9 @@ export function TeamSection({ professionals }: { professionals: Professional[] }
   return (
     <section id="equipe" aria-labelledby="equipe-titulo" className="scroll-mt-[72px] bg-carvao py-20 md:py-32">
       <div className={container}>
-        <Reveal>
-          <h2 id="equipe-titulo" className={sectionTitle}>
-            Equipe
-          </h2>
-        </Reveal>
+        <h2 id="equipe-titulo" className={sectionTitle}>
+          <TitleReveal>Equipe</TitleReveal>
+        </h2>
         <ul className="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
           {withPhoto.map((p) => (
             <li key={p.id}>

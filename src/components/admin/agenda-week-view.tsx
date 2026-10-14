@@ -313,7 +313,7 @@ export function AgendaWeekView({
             }`}
           >
             <div className="flex items-baseline justify-between">
-              <span className="font-nav text-[11px] font-bold tracking-widest text-white/50 uppercase">
+              <span className="font-nav text-xs font-semibold text-white/50">
                 {WEEKDAY_LABELS[new Date(`${day.dateISO}T00:00:00`).getDay()]}
               </span>
               <span
@@ -398,7 +398,7 @@ export function AgendaWeekView({
             <button
               type="button"
               onClick={() => openBlockForm(day.dateISO)}
-              className="mt-auto self-start font-nav text-[11px] font-bold tracking-widest text-white/30 uppercase transition-colors duration-150 hover:text-accent"
+              className="mt-auto self-start font-nav text-xs font-semibold text-white/30 transition-colors duration-150 hover:text-accent"
             >
               + Bloquear
             </button>
@@ -412,7 +412,7 @@ export function AgendaWeekView({
         <div className={`flex flex-col gap-3 ${cardClass}`}>
           <div className="flex items-start justify-between gap-4">
             <div>
-              <p className="font-nav text-sm font-bold tracking-wide text-white uppercase">
+              <p className="font-nav text-sm font-bold text-white">
                 {selection.data.client?.name ?? "Cliente removido"}
               </p>
               <p className="mt-1 text-sm text-white/60">
@@ -529,7 +529,7 @@ export function AgendaWeekView({
             <button
               type="button"
               onClick={() => setSelection(null)}
-              className="font-nav text-xs font-bold tracking-widest text-white/40 uppercase hover:text-white"
+              className="font-nav text-sm font-semibold text-white/40 hover:text-white"
             >
               Fechar
             </button>
@@ -547,7 +547,7 @@ export function AgendaWeekView({
 
       {selection?.kind === "block" && (
         <div className={`flex flex-col gap-3 ${cardClass}`}>
-          <p className="font-nav text-sm font-bold tracking-wide text-white uppercase">
+          <p className="font-nav text-sm font-bold text-white">
             Bloqueio {timeLabel(selection.data.starts_at)}–
             {timeLabel(selection.data.ends_at)}
           </p>
@@ -568,7 +568,7 @@ export function AgendaWeekView({
             <button
               type="button"
               onClick={() => setSelection(null)}
-              className="font-nav text-xs font-bold tracking-widest text-white/40 uppercase hover:text-white"
+              className="font-nav text-sm font-semibold text-white/40 hover:text-white"
             >
               Fechar
             </button>
@@ -644,7 +644,7 @@ export function AgendaWeekView({
           <button
             type="button"
             onClick={() => setBlockDate(null)}
-            className="font-nav text-xs font-bold tracking-widest text-white/40 uppercase hover:text-white"
+            className="font-nav text-sm font-semibold text-white/40 hover:text-white"
           >
             Cancelar
           </button>

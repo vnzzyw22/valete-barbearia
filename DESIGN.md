@@ -142,16 +142,29 @@ B — logo + carta
 
 ### Seções (só com dado real)
 
+Ordem na home (2026-10-14): Hero → Assinaturas → Serviços → Os artistas → (Equipe) → O trabalho →
+Onde estamos → Agende → rodapé.
+
+0. **Assinaturas** (carro-chefe, logo depois da Hero): o plano em destaque (`plans.featured`) é
+   uma **carta de baralho de verdade** — face branca, índice "V ♠" em carvão nos dois cantos (o
+   de baixo invertido), único bloco branco da página. Os outros planos ficam na mesma lista
+   tabular de Serviços. Assinar = WhatsApp (sem cobrança online). O link "Ver meu plano" leva à
+   Minha conta.
 1. **Serviços**: lista tabular de `services` (nome, descrição, duração e preço alinhados), no
    vernáculo da tabela de preços da parede de barbearia. Não são cards. Cada linha leva a
    `/agendar?servico=<id>`. Sem serviço cadastrado, mostra um estado vazio com saída para o
    WhatsApp, se houver.
-2. **Equipe**: só aparece com profissional ativo que tenha foto cadastrada.
-3. **O espaço**: fotos publicadas da galeria do painel; se não houver nenhuma, as fotos reais
-   versionadas em `public/fotos/`. Grade assimétrica.
-4. **Contato**: horário de `business_settings`; endereço, WhatsApp e Instagram só se
+2. **Os artistas** (antes "A casa"): foto da equipe e texto sobre os barbeiros, escrito só com
+   o que é real (serviços e escolha do profissional no agendamento). Sem anos, nomes ou número
+   de barbeiros até o cliente confirmar.
+3. **Equipe**: só aparece com profissional ativo que tenha foto cadastrada.
+4. **O trabalho** (antes "O espaço"; as fotos são do trabalho, não do salão): composição
+   editorial em 12 colunas com escala variada — foto grande (barbeiro e o logo na parede), o
+   título e um retrato à direita, depois um retrato menor e o close da navalha em recorte
+   horizontal. Legenda curta e factual em cada foto. Nunca quadrados iguais lado a lado.
+5. **Onde estamos** e **Agende**: horário de `business_settings`; endereço, WhatsApp e Instagram só se
    preenchidos. Fecha com o CTA de agendamento.
-5. **Rodapé**: assinatura do logo, navegação e páginas legais.
+6. **Rodapé**: assinatura do logo, navegação e páginas legais.
 
 Fora da home: FAQ e "Sobre" do Lkas (não há conteúdo real da Valete para eles), depoimentos,
 números de clientes e "diferenciais".
@@ -170,19 +183,29 @@ números de clientes e "diferenciais".
 
 ## Movimento
 
-Framer Motion, só `transform` e `opacity`.
+Framer Motion; só `transform`, `opacity` e `clip-path`. Tudo acontece uma vez, ao entrar na
+tela. Cada gesto tem um papel e vem do conceito (carta de baralho, tabela de preços da parede),
+nunca o mesmo fade em toda seção. Vocabulário em `src/components/site/motion.tsx`:
 
-- **Um momento orquestrado na entrada da Hero.** Em A, o contorno das letras se desenha e o
-  vídeo acende por dentro. Em B, o logo e o título entram em sequência curta.
-- **No scroll:** revelação única de títulos de seção e dos números reais (preços, durações,
-  horários): opacidade com deslocamento de 12px, 0,5s, uma vez. Sem stagger de cards e sem a
-  mesma animação em toda seção.
-- **`prefers-reduced-motion`:** a entrada da Hero não anima (CSS desligado por media query), as
-  revelações no scroll perdem o deslocamento e ficam só com troca de opacidade (`MotionConfig
-  reducedMotion="user"`), e o vídeo não toca sozinho: fica o poster, com botão para tocar. Em
-  qualquer caso há botão de pausar o vídeo (WCAG 2.2.2).
-- A entrada da Hero é CSS (`.v-enter`, `.v-fade`, `.v-draw` em `globals.css`) e não Framer Motion,
-  para não ler a preferência de movimento na renderização (risco de erro de hidratação).
+- **Entrada da Hero** (CSS `.v-enter`/`.v-fade`/`.v-draw`): logo e título em sequência curta.
+- **Saída da Hero no scroll** (`hero.tsx`): o conteúdo sobe ~140px e esmaece; o vídeo nítido
+  ganha zoom de 8%. Ligado ao scroll, não a tempo.
+- **A carta** (`playing-card.tsx`, Assinaturas e Minha conta): entra virada para baixo (verso em
+  grafite com o logo), é "dada" na mesa (sobe com mola) e vira para a face; depois, com o mouse,
+  inclina em 3D até 12° na direção do ponteiro, com uma luz fria acompanhando e a sombra no chão
+  se deslocando. Toque não inclina. É o gesto-assinatura do site: não repetir em outro lugar.
+- **Títulos de seção** (`TitleReveal`): o texto sobe de dentro da própria linha (máscara).
+- **Listas tabulares** (`RuledItem`, Serviços e planos): o fio se desenha da esquerda para a
+  direita, linha a linha (0,07s entre linhas), e o conteúdo acende logo depois.
+- **Fotos de O trabalho** (`MediaReveal`): cortina de baixo para cima com zoom-out lento.
+- **Os artistas:** a foto da equipe faz um zoom-out lento acompanhando o scroll.
+- **Números** (horário em Onde estamos): opacidade + 12px (`Reveal`).
+- **`prefers-reduced-motion`:** `MotionConfig reducedMotion="user"` zera deslocamentos (a carta
+  aparece já virada, sem inclinação), o CSS desliga a cortina (`.media-reveal`) e a saída da Hero
+  (`.hero-scroll-exit`), a entrada da Hero não anima e o vídeo fica no poster.
+- Armadilha conhecida: quem observa a entrada na tela (`whileInView`) precisa ser o elemento
+  visível — o texto escondido dentro da máscara ou um quadro com `clip-path` fechado nunca
+  "aparece" para o IntersectionObserver.
 
 ## Componentes
 

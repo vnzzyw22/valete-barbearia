@@ -1,6 +1,7 @@
 import { formatBusinessHours } from "@/lib/business-hours";
 import type { BusinessSettings } from "@/lib/supabase/types";
 import { getWhatsappLink } from "@/lib/whatsapp";
+import { TitleReveal } from "./motion";
 import { Reveal } from "./reveal";
 import { container, sectionTitle, textLink } from "./ui";
 
@@ -45,11 +46,9 @@ export function LocationSection({ business }: { business: BusinessSettings | nul
     <section id="onde-estamos" aria-labelledby="onde-titulo" className="scroll-mt-[72px] bg-ink py-20 md:py-32">
       <div className={`${container} grid gap-12 lg:grid-cols-12 lg:gap-10`}>
         <div className="flex flex-col lg:col-span-5">
-          <Reveal>
-            <h2 id="onde-titulo" className={sectionTitle}>
-              Onde estamos
-            </h2>
-          </Reveal>
+          <h2 id="onde-titulo" className={sectionTitle}>
+            <TitleReveal>Onde estamos</TitleReveal>
+          </h2>
 
           <address className="mt-8 not-italic">
             <p className="font-display max-w-[22ch] text-[clamp(1.375rem,2vw,1.75rem)] leading-[1.2] font-bold text-white">

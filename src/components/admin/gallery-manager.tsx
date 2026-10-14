@@ -176,7 +176,7 @@ export function GalleryManager({ photos }: GalleryManagerProps) {
             name="file"
             accept="image/*"
             required
-            className="w-full text-sm text-white/70 file:mr-3 file:rounded-full file:border-0 file:bg-white/10 file:px-3 file:py-1.5 file:text-xs file:font-bold file:tracking-widest file:text-white file:uppercase"
+            className="w-full text-sm text-white/70 file:mr-3 file:rounded-full file:border-0 file:bg-white/10 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white"
           />
         </div>
         <div className="flex flex-col gap-1.5">

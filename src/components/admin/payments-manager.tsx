@@ -144,7 +144,7 @@ export function PaymentsManager({ queue }: PaymentsManagerProps) {
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="font-nav text-sm font-bold tracking-wide text-white uppercase">
+                    <p className="font-nav text-sm font-bold text-white">
                       {appointment.client?.name ?? "Cliente removido"}
                     </p>
                     <p className="mt-1 text-sm text-white/70">

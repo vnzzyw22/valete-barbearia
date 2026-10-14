@@ -5,12 +5,14 @@ import { Hero, type HeroVariant } from "@/components/site/hero";
 import { LocationSection } from "@/components/site/location-section";
 import { MotionProvider } from "@/components/site/motion-provider";
 import { Navbar } from "@/components/site/navbar";
+import { PlansSection } from "@/components/site/plans-section";
 import { ServicesSection } from "@/components/site/services-section";
 import { SpaceSection } from "@/components/site/space-section";
 import { TeamSection } from "@/components/site/team-section";
 import { toSchemaOpeningHours } from "@/lib/business-hours";
 import { getSiteUrl } from "@/lib/site-url";
 import {
+  getActivePlans,
   getActiveProfessionals,
   getActiveServices,
   getBusinessSettings,
@@ -24,11 +26,12 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const params = await searchParams;
   const variant: HeroVariant = params.hero === "a" ? "a" : params.hero === "b" ? "b" : DEFAULT_HERO;
 
-  const [business, services, professionals, gallery] = await Promise.all([
+  const [business, services, professionals, gallery, plans] = await Promise.all([
     getBusinessSettings(),
     getActiveServices(),
     getActiveProfessionals(),
     getPublicGalleryPhotos(),
+    getActivePlans(),
   ]);
 
   // Dados estruturados de negócio local: só os campos que existem no banco.
@@ -54,6 +57,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       <Navbar />
       <main id="conteudo" className="flex flex-1 flex-col">
         <Hero variant={variant} />
+        <PlansSection plans={plans} whatsapp={business?.whatsapp ?? null} />
         <ServicesSection services={services} whatsapp={business?.whatsapp ?? null} />
         <AboutSection />
         <TeamSection professionals={professionals} />

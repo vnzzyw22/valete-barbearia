@@ -50,12 +50,17 @@ if [ ! -x "$STATE/bin/postgrest" ]; then
   tar -xf "$STATE/bin/pgrst.tar.xz" -C "$STATE/bin"
 fi
 
-# 3) Segredo JWT local e chave anon (gerados aqui, nunca versionados)
+# 3) Segredo JWT local, chave anon e chave service_role (gerados aqui, nunca versionados)
 [ -s "$STATE/jwt-secret.txt" ] || head -c 48 /dev/urandom | base64 | tr -dc 'A-Za-z0-9' | head -c 48 > "$STATE/jwt-secret.txt"
 ANON_KEY="$(SECRET_FILE="$STATE/jwt-secret.txt" node -e '
 const c=require("crypto"),s=require("fs").readFileSync(process.env.SECRET_FILE,"utf8").trim();
 const b=x=>Buffer.from(JSON.stringify(x)).toString("base64url");
 const h=b({alg:"HS256",typ:"JWT"}),p=b({role:"anon",iss:"valete-local-test",iat:1760000000,exp:2000000000});
+console.log(h+"."+p+"."+c.createHmac("sha256",s).update(h+"."+p).digest("base64url"))')"
+SERVICE_KEY="$(SECRET_FILE="$STATE/jwt-secret.txt" node -e '
+const c=require("crypto"),s=require("fs").readFileSync(process.env.SECRET_FILE,"utf8").trim();
+const b=x=>Buffer.from(JSON.stringify(x)).toString("base64url");
+const h=b({alg:"HS256",typ:"JWT"}),p=b({role:"service_role",iss:"valete-local-test",iat:1760000000,exp:2000000000});
 console.log(h+"."+p+"."+c.createHmac("sha256",s).update(h+"."+p).digest("base64url"))')"
 cat > "$STATE/postgrest.conf" <<CONF
 db-uri = "postgres://authenticator:authenticator-local-test@127.0.0.1:$PGPORT/valete_test"
@@ -87,4 +92,5 @@ echo
 echo "Pronto. Coloque no .env.local (já ignorado pelo git):"
 echo "NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:$GATEWAY_PORT"
 echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$ANON_KEY"
+echo "SUPABASE_SERVICE_ROLE_KEY=$SERVICE_KEY"
 echo "Admin de teste: admin@teste.local / senha-local-de-teste"

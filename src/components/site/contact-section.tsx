@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { BusinessSettings } from "@/lib/supabase/types";
 import { getWhatsappLink } from "@/lib/whatsapp";
-import { Reveal } from "./reveal";
+import { TitleReveal } from "./motion";
 import { buttonPrimary, container, sectionTitle, textLink } from "./ui";
 
 // Fecho da página: chamada para agendar. Endereço, mapa, contatos e horário ficam em
@@ -13,11 +13,9 @@ export function ContactSection({ business }: { business: BusinessSettings | null
     <section id="contato" aria-labelledby="contato-titulo" className="scroll-mt-[72px] bg-carvao py-20 md:py-28">
       <div className={`${container} flex flex-col gap-8 md:flex-row md:items-end md:justify-between`}>
         <div>
-          <Reveal>
-            <h2 id="contato-titulo" className={`${sectionTitle} max-w-[12ch]`}>
-              Agende seu horário
-            </h2>
-          </Reveal>
+          <h2 id="contato-titulo" className={`${sectionTitle} max-w-[12ch]`}>
+            <TitleReveal>Agende seu horário</TitleReveal>
+          </h2>
           <p className="mt-6 max-w-[38ch] text-[17px] leading-relaxed text-cinza">
             Escolha o serviço, o profissional e o horário livre. A confirmação chega pela equipe.
           </p>

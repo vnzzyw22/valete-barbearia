@@ -104,7 +104,7 @@ export function FinanceView({
         >
           ← Mês anterior
         </button>
-        <span className="font-nav text-xs font-bold tracking-widest text-white uppercase">
+        <span className="font-nav text-sm font-semibold text-white">
           {monthISO}
         </span>
         <button
@@ -118,7 +118,7 @@ export function FinanceView({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-lg border border-white/10 border-l-4 border-l-green-500/70 bg-[#1a1a1a] p-5">
-          <p className="font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+          <p className="font-nav text-sm font-semibold text-white/40">
             Entradas
           </p>
           <p className="mt-2 font-label text-2xl font-bold tabular-nums text-green-400">
@@ -126,7 +126,7 @@ export function FinanceView({
           </p>
         </div>
         <div className="rounded-lg border border-white/10 border-l-4 border-l-red-500/70 bg-[#1a1a1a] p-5">
-          <p className="font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+          <p className="font-nav text-sm font-semibold text-white/40">
             Saídas
           </p>
           <p className="mt-2 font-label text-2xl font-bold tabular-nums text-red-400">
@@ -134,7 +134,7 @@ export function FinanceView({
           </p>
         </div>
         <div className="rounded-lg border border-white/10 border-l-4 border-l-accent bg-[#1a1a1a] p-5">
-          <p className="font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+          <p className="font-nav text-sm font-semibold text-white/40">
             Saldo
           </p>
           <p className="mt-2 font-label text-2xl font-bold tabular-nums text-white">
@@ -219,22 +219,22 @@ export function FinanceView({
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
               <tr className="border-b border-white/10 bg-white/[0.03]">
-                <th className="px-4 py-3 font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="px-4 py-3 font-nav text-sm font-semibold text-white/40">
                   Data
                 </th>
-                <th className="px-4 py-3 font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="px-4 py-3 font-nav text-sm font-semibold text-white/40">
                   Tipo
                 </th>
-                <th className="px-4 py-3 font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="px-4 py-3 font-nav text-sm font-semibold text-white/40">
                   Categoria
                 </th>
-                <th className="px-4 py-3 font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="px-4 py-3 font-nav text-sm font-semibold text-white/40">
                   Descrição
                 </th>
-                <th className="px-4 py-3 text-right font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="px-4 py-3 text-right font-nav text-sm font-semibold text-white/40">
                   Valor
                 </th>
-                <th className="px-4 py-3 text-right font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="px-4 py-3 text-right font-nav text-sm font-semibold text-white/40">
                   Ações
                 </th>
               </tr>

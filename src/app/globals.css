@@ -129,21 +129,37 @@ select option {
   mask-image: linear-gradient(to top, transparent 0%, #000 40%);
 }
 .hero-b-veil {
-  background: linear-gradient(to top, rgb(10 10 10 / 0.85) 0%, rgb(10 10 10 / 0.35) 45%, transparent 70%);
+  /* topo: links da navbar (a partir de 768 px) e "Menu" sobre a placa branca do vídeo */
+  background:
+    linear-gradient(to bottom, rgb(10 10 10 / 0.75) 0, transparent 160px),
+    linear-gradient(to top, rgb(10 10 10 / 0.85) 0%, rgb(10 10 10 / 0.35) 45%, transparent 70%);
 }
 @media (min-width: 1024px) {
   .hero-b-sharp {
     left: auto;
-    /* ~0,88 × altura (2026-10-14, pedido do cliente: um pouco menos de borrão): o vídeo nítido
-       fica ~1,1× o tamanho nativo e a parte 100% nítida cresce ~30% (de ~365 para ~475 px em 1440×900) */
-    width: min(68vw, calc(100svh * 0.88));
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 40%);
-    mask-image: linear-gradient(to right, transparent 0%, #000 40%);
+    /* ~0,92 × altura e transição em 32% (2026-10-14, 2º pedido do cliente: o borrão ainda
+       avançava demais para a direita). Em 1440×900 a parte 100% nítida começa ~90 px mais à
+       esquerda; o zoom do vídeo sobe só ~4,5% em relação ao 0,88. */
+    width: min(70vw, calc(100svh * 0.92));
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 32%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 32%);
   }
   .hero-b-veil {
     /* esquerda: logo e título; topo: links da navbar sobre a parte clara do vídeo */
     background:
       linear-gradient(to bottom, rgb(10 10 10 / 0.6) 0, transparent 140px),
       linear-gradient(to right, rgb(10 10 10 / 0.55) 0%, rgb(10 10 10 / 0.2) 40%, transparent 60%);
+  }
+}
+
+/* Movimento reduzido: a cortina das fotos (motion.tsx > MediaReveal) é clip-path, que o
+   MotionConfig não desliga sozinho; e a saída da Hero no scroll (hero.tsx) é ligada ao scroll. */
+@media (prefers-reduced-motion: reduce) {
+  .media-reveal {
+    clip-path: none !important;
+  }
+  .hero-scroll-exit {
+    transform: none !important;
+    opacity: 1 !important;
   }
 }

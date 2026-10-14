@@ -4,6 +4,7 @@ import { createClient } from "./server";
 import type {
   BusinessSettings,
   GalleryPhoto,
+  Plan,
   Professional,
   Service,
 } from "./types";
@@ -150,6 +151,24 @@ export async function getPublicGalleryPhotos(): Promise<GalleryPhoto[]> {
 
   if (error) {
     console.error("Erro ao buscar gallery_photos (galeria):", error.message);
+    return [];
+  }
+
+  return data;
+}
+
+// Planos de assinatura ativos (seção Assinaturas). O destaque vem primeiro.
+export async function getActivePlans(): Promise<Plan[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("plans")
+    .select("id, name, description, price, weekdays, featured")
+    .eq("active", true)
+    .order("featured", { ascending: false })
+    .order("display_order", { ascending: true });
+
+  if (error) {
+    console.error("Erro ao buscar plans:", error.message);
     return [];
   }
 

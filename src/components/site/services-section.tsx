@@ -2,7 +2,7 @@ import Link from "next/link";
 import { formatPrice, formatServiceDuration } from "@/lib/format";
 import type { Service } from "@/lib/supabase/types";
 import { getWhatsappLink } from "@/lib/whatsapp";
-import { Reveal } from "./reveal";
+import { RuledItem, TitleReveal } from "./motion";
 import { buttonPrimary, container, sectionTitle, textLink } from "./ui";
 
 interface ServicesSectionProps {
@@ -19,11 +19,9 @@ export function ServicesSection({ services, whatsapp }: ServicesSectionProps) {
     <section id="servicos" aria-labelledby="servicos-titulo" className="scroll-mt-[72px] bg-carvao py-20 md:py-32">
       <div className={`${container} grid gap-10 md:grid-cols-12`}>
         <div className="md:col-span-4">
-          <Reveal>
-            <h2 id="servicos-titulo" className={sectionTitle}>
-              Serviços
-            </h2>
-          </Reveal>
+          <h2 id="servicos-titulo" className={sectionTitle}>
+            <TitleReveal>Serviços</TitleReveal>
+          </h2>
           {services.length > 0 && (
             <p className="mt-5 max-w-[30ch] text-[17px] leading-relaxed text-cinza">
               Escolha o serviço para ver os horários livres.
@@ -51,8 +49,8 @@ export function ServicesSection({ services, whatsapp }: ServicesSectionProps) {
             </div>
           ) : (
             <ul className="border-t border-ardosia">
-              {services.map((service) => (
-                <li key={service.id} className="border-b border-ardosia">
+              {services.map((service, index) => (
+                <RuledItem key={service.id} index={index}>
                   <Link
                     href={`/agendar?servico=${service.id}`}
                     className="group -mx-4 grid grid-cols-[1fr_auto] items-baseline gap-x-6 gap-y-1 rounded-sm px-4 py-6 transition-colors duration-200 hover:bg-grafite md:grid-cols-[1fr_auto_auto_auto] md:py-7"
@@ -67,11 +65,9 @@ export function ServicesSection({ services, whatsapp }: ServicesSectionProps) {
                         </span>
                       )}
                     </span>
-                    <Reveal className="col-start-2 row-start-1 text-right md:col-start-3">
-                      <span className="block text-[clamp(1.25rem,1.8vw,1.5rem)] font-semibold text-white tabular-nums">
-                        {formatPrice(service.price)}
-                      </span>
-                    </Reveal>
+                    <span className="col-start-2 row-start-1 block text-right text-[clamp(1.25rem,1.8vw,1.5rem)] font-semibold text-white tabular-nums md:col-start-3">
+                      {formatPrice(service.price)}
+                    </span>
                     <span className="col-span-2 text-[15px] text-cinza tabular-nums md:col-span-1 md:col-start-2 md:row-start-1 md:text-right">
                       {formatServiceDuration(service)}
                     </span>
@@ -79,7 +75,7 @@ export function ServicesSection({ services, whatsapp }: ServicesSectionProps) {
                       Agendar
                     </span>
                   </Link>
-                </li>
+                </RuledItem>
               ))}
             </ul>
           )}

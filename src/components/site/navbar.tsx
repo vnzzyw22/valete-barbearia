@@ -6,9 +6,10 @@ import { ValeteLogo } from "./card-index";
 import { buttonPrimary, container } from "./ui";
 
 const links = [
+  { href: "#assinaturas", label: "Assinaturas" },
   { href: "#servicos", label: "Serviços" },
-  { href: "#sobre", label: "A casa" },
-  { href: "#espaco", label: "O espaço" },
+  { href: "#artistas", label: "Os artistas" },
+  { href: "#trabalho", label: "O trabalho" },
   { href: "#onde-estamos", label: "Onde estamos" },
 ];
 
@@ -44,19 +45,29 @@ export function Navbar() {
           <ValeteLogo className="h-9" label="Valete" />
         </Link>
 
-        <div className="hidden items-center gap-9 md:flex">
+        <div className="hidden items-center gap-9 lg:flex">
           <ul className="flex items-center gap-8">
             {links.map((link) => (
               <li key={link.href}>
                 <a
                   href={`/${link.href}`}
-                  className="text-[15px] font-medium text-cinza transition-colors duration-200 hover:text-white"
+                  className={`text-[15px] font-medium transition-colors duration-200 hover:text-white ${
+                    solid ? "text-cinza" : "text-white/90"
+                  }`}
                 >
                   {link.label}
                 </a>
               </li>
             ))}
           </ul>
+          <Link
+            href="/minha-conta"
+            className={`text-[15px] font-semibold transition-colors duration-200 hover:text-white ${
+              solid ? "text-cinza" : "text-white/90"
+            }`}
+          >
+            Minha conta
+          </Link>
           <Link href="/agendar" className={`${buttonPrimary} min-h-10 px-6 py-2 text-sm`}>
             Agendar
           </Link>
@@ -65,7 +76,7 @@ export function Navbar() {
         <button
           type="button"
           onClick={() => setOpen((v) => !v)}
-          className="-mr-2 flex min-h-11 items-center px-2 text-[15px] font-semibold text-white md:hidden"
+          className="-mr-2 flex min-h-11 items-center px-2 text-[15px] font-semibold text-white lg:hidden"
           aria-expanded={open}
           aria-controls="menu-mobile"
         >
@@ -74,7 +85,7 @@ export function Navbar() {
       </nav>
 
       {open && (
-        <div id="menu-mobile" className="border-t border-ardosia bg-carvao md:hidden">
+        <div id="menu-mobile" className="border-t border-ardosia bg-carvao lg:hidden">
           <ul className={`${container} flex flex-col py-4`}>
             {links.map((link) => (
               <li key={link.href}>
@@ -87,6 +98,15 @@ export function Navbar() {
                 </a>
               </li>
             ))}
+            <li>
+              <Link
+                href="/minha-conta"
+                onClick={() => setOpen(false)}
+                className="font-display flex min-h-14 items-center text-2xl font-bold text-white"
+              >
+                Minha conta
+              </Link>
+            </li>
             <li className="pt-4 pb-2">
               <Link href="/agendar" onClick={() => setOpen(false)} className={`${buttonPrimary} w-full`}>
                 Agendar horário

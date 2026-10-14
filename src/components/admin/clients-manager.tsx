@@ -100,7 +100,7 @@ export function ClientsManager({ clients }: ClientsManagerProps) {
           onSubmit={handleSubmit}
           className={`flex max-w-lg flex-col gap-4 ${cardClass}`}
         >
-          <h2 className="font-nav text-sm font-bold tracking-widest text-white uppercase">
+          <h2 className="font-nav text-sm font-bold text-white">
             Editar cliente
           </h2>
 
@@ -167,19 +167,19 @@ export function ClientsManager({ clients }: ClientsManagerProps) {
           <table className="w-full min-w-[640px] text-left text-sm">
             <thead>
               <tr className="border-b border-white/10 bg-white/[0.03]">
-                <th className="px-4 py-3 font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="px-4 py-3 font-nav text-sm font-semibold text-white/40">
                   Nome
                 </th>
-                <th className="px-4 py-3 font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="px-4 py-3 font-nav text-sm font-semibold text-white/40">
                   WhatsApp
                 </th>
-                <th className="px-4 py-3 font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="px-4 py-3 font-nav text-sm font-semibold text-white/40">
                   Observações
                 </th>
-                <th className="px-4 py-3 font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="px-4 py-3 font-nav text-sm font-semibold text-white/40">
                   Desde
                 </th>
-                <th className="px-4 py-3 text-right font-nav text-xs font-bold tracking-widest text-white/40 uppercase">
+                <th className="px-4 py-3 text-right font-nav text-sm font-semibold text-white/40">
                   Ações
                 </th>
               </tr>

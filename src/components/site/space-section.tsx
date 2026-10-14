@@ -1,60 +1,94 @@
 import Image from "next/image";
 import type { GalleryPhoto } from "@/lib/supabase/types";
-import { Reveal } from "./reveal";
+import { MediaReveal, TitleReveal } from "./motion";
 import { container, sectionTitle } from "./ui";
 
 interface Photo {
   src: string;
   alt: string;
+  caption?: string;
+  // Recorte: as fotos do Instagram trazem a marca d'água do bigode no centro da base (~91–94% da
+  // altura). Em 9:10 sobra 89% da altura: ancorar no topo (0%) deixa a marca de fora.
+  position?: string;
 }
 
 // Fotos reais da Valete versionadas no projeto (assets-source/fotos → public/fotos). Usadas só
-// enquanto a galeria do painel não tiver fotos publicadas.
+// enquanto a galeria do painel não tiver fotos publicadas. São retratos do trabalho, não do
+// salão — por isso a seção se chama "O trabalho" (2026-10-14; antes "O espaço").
 const VERSIONED: Photo[] = [
-  { src: "/fotos/valete-fade-perfil.webp", alt: "Perfil de um cliente com degradê recém-feito e risca marcada." },
-  { src: "/fotos/valete-barbeiro-secador.webp", alt: "Barbeiro de boné secando o cabelo de um cliente reclinado na cadeira." },
-  { src: "/fotos/valete-barba-navalha-close.webp", alt: "Acabamento da barba com navalha, visto de perto." },
-  { src: "/fotos/valete-fade-spray.webp", alt: "Barbeiro borrifando água no cabelo de um cliente durante o corte." },
+  {
+    src: "/fotos/valete-barbeiro-secador.webp",
+    alt: "Barbeiro de boné finalizando a barba de um cliente reclinado, com o secador, diante da parede com o logo da Valete.",
+    caption: "Finalização da barba",
+    position: "50% 40%",
+  },
+  {
+    src: "/fotos/valete-fade-spray.webp",
+    alt: "Barbeiro borrifando água no cabelo de um cliente com degradê e risca, a névoa aparecendo contra o fundo escuro.",
+    caption: "Degradê com risca",
+    position: "50% 0%",
+  },
+  {
+    src: "/fotos/valete-fade-perfil.webp",
+    alt: "Perfil de um cliente com degradê baixo recém-feito.",
+    caption: "Degradê baixo",
+    position: "50% 0%",
+  },
+  {
+    src: "/fotos/valete-barba-navalha-close.webp",
+    alt: "Navalha acertando o contorno de uma barba grisalha, visto bem de perto.",
+    caption: "Barba na navalha",
+    position: "40% 42%",
+  },
 ];
 
-// A primeira foto ocupa metade da largura e duas linhas; as outras quatro formam pares ao lado.
-// Todas em 4:5: a grande tem a largura de duas pequenas + o gutter, então as alturas fecham
-// (diferença de ~0,25 gutter). Sem margens negativas nem sobreposição.
-const STRIP = ["md:col-span-3"];
-const LAYOUT = ["col-span-2 md:col-span-6 md:row-span-2", "md:col-span-3", "md:col-span-3", "md:col-span-3", "md:col-span-3"];
+// Composição editorial em 12 colunas (desktop), com escala e ritmo em vez de quadrados iguais:
+//   linha 1: foto grande à esquerda (7 col.) | título, texto e a 2ª foto à direita (4 col.)
+//   linha 2: 3ª foto menor (4 col.)          | 4ª foto em recorte horizontal, mais baixa (7 col.)
+// No celular: grande, depois duas lado a lado, depois a horizontal.
+const SLOTS = [
+  { li: "col-span-2 lg:col-span-7 lg:row-span-2", frame: "aspect-[4/5]", sizes: "(min-width: 1024px) 55vw, 100vw" },
+  { li: "col-span-1 lg:col-span-4 lg:col-start-9 lg:row-start-2 lg:self-end", frame: "aspect-[9/10]", sizes: "(min-width: 1024px) 30vw, 50vw" },
+  { li: "col-span-1 lg:col-span-4 lg:row-start-3 lg:mt-16", frame: "aspect-[9/10]", sizes: "(min-width: 1024px) 30vw, 50vw" },
+  { li: "col-span-2 lg:col-span-7 lg:col-start-6 lg:row-start-3 lg:mt-40", frame: "aspect-[3/2]", sizes: "(min-width: 1024px) 55vw, 100vw" },
+];
 
 export function SpaceSection({ gallery }: { gallery: GalleryPhoto[] }) {
   const photos: Photo[] =
     gallery.length > 0
-      ? gallery.map((p, i) => ({ src: p.url, alt: `Foto da Valete Barbearia ${i + 1}` }))
+      ? gallery.slice(0, SLOTS.length).map((p, i) => ({ src: p.url, alt: `Trabalho da Valete Barbearia, foto ${i + 1}` }))
       : VERSIONED;
-  // Fotos versionadas: faixa de 4 iguais, recortadas acima da marca d'água do bigode.
-  const strip = gallery.length === 0;
-  const layout = strip ? STRIP : LAYOUT;
 
   return (
-    <section id="espaco" aria-labelledby="espaco-titulo" className="scroll-mt-[72px] bg-ink py-20 md:py-32">
-      <div className={container}>
-        <Reveal>
-          <h2 id="espaco-titulo" className={sectionTitle}>
-            O espaço
+    <section id="trabalho" aria-labelledby="trabalho-titulo" className="scroll-mt-[72px] bg-ink py-20 md:py-32">
+      <div className={`${container} grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-12 lg:gap-x-6 lg:gap-y-0`}>
+        <div className="col-span-2 lg:col-span-4 lg:col-start-9 lg:row-start-1">
+          <h2 id="trabalho-titulo" className={sectionTitle}>
+            <TitleReveal>O trabalho</TitleReveal>
           </h2>
-        </Reveal>
-        <ul className="mt-12 grid grid-cols-2 gap-4 md:mt-16 md:grid-cols-12 md:gap-6">
-          {photos.map((photo, i) => (
-            <li key={photo.src} className={layout[i % layout.length]}>
-              <div className={`relative overflow-hidden bg-carvao ${strip ? "aspect-[10/11]" : i === 0 ? "aspect-[4/5] md:aspect-auto md:h-full" : "aspect-[4/5]"}`}>
+          <p className="mt-5 max-w-[30ch] text-[17px] leading-relaxed text-cinza">
+            O que sai das cadeiras da Valete, fotografado de perto.
+          </p>
+        </div>
+
+        {photos.map((photo, i) => {
+          const slot = SLOTS[i];
+          return (
+            <figure key={photo.src} className={slot.li}>
+              <MediaReveal className={slot.frame} delay={i % 2 === 1 ? 0.15 : 0}>
                 <Image
                   src={photo.src}
                   alt={photo.alt}
                   fill
-                  sizes={!strip && i === 0 ? "(min-width: 768px) 45vw, 100vw" : "(min-width: 768px) 22vw, 50vw"}
-                  className={`object-cover ${strip ? "object-top" : ""}`}
+                  sizes={slot.sizes}
+                  className="object-cover"
+                  style={photo.position ? { objectPosition: photo.position } : undefined}
                 />
-              </div>
-            </li>
-          ))}
-        </ul>
+              </MediaReveal>
+              {photo.caption && <figcaption className="mt-3 text-[15px] text-cinza">{photo.caption}</figcaption>}
+            </figure>
+          );
+        })}
       </div>
     </section>
   );
