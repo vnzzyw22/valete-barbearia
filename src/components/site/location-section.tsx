@@ -18,6 +18,20 @@ function formatPhone(digits: string) {
   return digits;
 }
 
+// O navegador quebra linha no hífen do CEP ("86810-" / "250") em telas estreitas. O CEP vai num
+// span sem quebra; o resto do endereço continua quebrando normalmente.
+function withUnbreakableCep(address: string) {
+  return address.split(/(\b\d{5}-\d{3}\b)/).map((part, i) =>
+    i % 2 === 1 ? (
+      <span key={i} className="whitespace-nowrap">
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  );
+}
+
 // "Onde estamos": endereço, mapa, contatos e horário — tudo de business_settings (painel →
 // Configurações). Sem endereço cadastrado a seção não aparece; cada contato só se preenchido.
 export function LocationSection({ business }: { business: BusinessSettings | null }) {
@@ -52,7 +66,7 @@ export function LocationSection({ business }: { business: BusinessSettings | nul
 
           <address className="mt-8 not-italic">
             <p className="font-display max-w-[22ch] text-[clamp(1.375rem,2vw,1.75rem)] leading-[1.2] font-bold text-white">
-              {address}
+              {withUnbreakableCep(address)}
             </p>
             <a href={directionsHref} target="_blank" rel="noopener noreferrer" className={`${textLink} mt-4`}>
               Como chegar

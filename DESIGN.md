@@ -142,7 +142,7 @@ B — logo + carta
 
 ### Seções (só com dado real)
 
-Ordem na home (2026-10-14): Hero → Assinaturas → Serviços → Os artistas → (Equipe) → O trabalho →
+Ordem na home (2026-10-14): Hero → Assinaturas → Serviços → Os artistas → O trabalho →
 Onde estamos → Agende → rodapé.
 
 0. **Assinaturas** (carro-chefe, logo depois da Hero): o plano em destaque (`plans.featured`) é
@@ -157,7 +157,9 @@ Onde estamos → Agende → rodapé.
 2. **Os artistas** (antes "A casa"): foto da equipe e texto sobre os barbeiros, escrito só com
    o que é real (serviços e escolha do profissional no agendamento). Sem anos, nomes ou número
    de barbeiros até o cliente confirmar.
-3. **Equipe**: só aparece com profissional ativo que tenha foto cadastrada.
+3. **Quem atende** (dentro de Os artistas, antes uma seção "Equipe" à parte): retratos 4:5 dos
+   profissionais ativos com foto cadastrada no painel, abaixo do texto e da foto do grupo. Sem
+   nenhuma foto, o bloco não aparece.
 4. **O trabalho** (antes "O espaço"; as fotos são do trabalho, não do salão): composição
    editorial em 12 colunas com escala variada — foto grande (barbeiro e o logo na parede), o
    título e um retrato à direita, depois um retrato menor e o close da navalha em recorte

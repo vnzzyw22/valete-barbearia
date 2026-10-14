@@ -3,7 +3,8 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useRef } from "react";
-import { TitleReveal } from "./motion";
+import type { Professional } from "@/lib/supabase/types";
+import { MediaReveal, TitleReveal } from "./motion";
 import { container, sectionTitle } from "./ui";
 
 // "Os artistas" (pedido do usuário em 2026-10-14, antes "A casa"): texto sobre a equipe de
@@ -20,7 +21,11 @@ const ABOUT_PARAGRAPHS: string[] | null = [
 // do bigode (as fotos vêm do Instagram da casa com ela no centro da base).
 const CROP = "aspect-[10/11] object-top";
 
-export function AboutSection() {
+// A antiga seção "Equipe" vive aqui dentro desde 2026-10-14: os retratos de quem atende entram
+// abaixo do texto e da foto do grupo, só para profissional ativo com foto cadastrada no painel.
+// Sem nenhuma foto, "Os artistas" fica só com o texto e a foto da equipe.
+export function AboutSection({ professionals = [] }: { professionals?: Professional[] }) {
+  const roster = professionals.filter((p) => p.photo_url);
   const photoRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: photoRef, offset: ["start end", "end start"] });
@@ -72,6 +77,31 @@ export function AboutSection() {
           <figcaption className="mt-4 text-[15px] text-cinza">Os artistas da Valete.</figcaption>
         </figure>
       </div>
+
+      {roster.length > 0 && (
+        <div className={`${container} mt-20 md:mt-28`}>
+          <h3 className="border-t border-ardosia pt-8 text-lg font-bold [font-stretch:112%] text-white">
+            Quem atende
+          </h3>
+          <ul className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-4 md:gap-x-6">
+            {roster.map((p, i) => (
+              <li key={p.id}>
+                <MediaReveal className="aspect-[4/5]" delay={(i % 4) * 0.08}>
+                  <Image
+                    src={p.photo_url!}
+                    alt={`Retrato de ${p.name}`}
+                    fill
+                    sizes="(min-width: 768px) 25vw, 50vw"
+                    className="object-cover"
+                  />
+                </MediaReveal>
+                <p className="mt-4 text-lg font-bold [font-stretch:112%] text-white">{p.name}</p>
+                {p.bio && <p className="mt-1 text-[15px] leading-relaxed text-cinza">{p.bio}</p>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </section>
   );
 }

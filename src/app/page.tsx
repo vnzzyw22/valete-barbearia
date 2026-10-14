@@ -8,7 +8,6 @@ import { Navbar } from "@/components/site/navbar";
 import { PlansSection } from "@/components/site/plans-section";
 import { ServicesSection } from "@/components/site/services-section";
 import { SpaceSection } from "@/components/site/space-section";
-import { TeamSection } from "@/components/site/team-section";
 import { toSchemaOpeningHours } from "@/lib/business-hours";
 import { getSiteUrl } from "@/lib/site-url";
 import {
@@ -59,8 +58,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         <Hero variant={variant} />
         <PlansSection plans={plans} whatsapp={business?.whatsapp ?? null} />
         <ServicesSection services={services} whatsapp={business?.whatsapp ?? null} />
-        <AboutSection />
-        <TeamSection professionals={professionals} />
+        <AboutSection professionals={professionals} />
         <SpaceSection gallery={gallery} />
         <LocationSection business={business} />
         <ContactSection business={business} />

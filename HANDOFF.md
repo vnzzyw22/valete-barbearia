@@ -4,7 +4,38 @@ Este repositório é a **Valete Barbearia — Cut and Beard**, cópia independen
 O `CLAUDE.md` ainda descreve o Lkas: vale como histórico técnico (arquitetura, lições de bugs),
 **não** como identidade visual. A identidade da Valete está em `DESIGN.md` e `PRODUCT.md`.
 
-## ⚡⚡ Atualização 2026-10-14, 2ª sessão no desktop (mais recente): leia isto primeiro
+## ⚡⚡⚡ Atualização 2026-10-14, 3ª sessão (nuvem, mais recente): pendências técnicas fechadas
+
+Feito e conferido com Playwright contra `next build` + `next start` e o banco local (`up.sh`):
+- **ESLint e `tsc` limpos** no `src` inteiro (no Linux com 8 GB não estourou memória). Antes do
+  `tsc` avulso, rodar `npx next typegen` (gera `PageProps`/`LayoutProps`); o `next build` já faz isso.
+- **Seção Equipe integrada a "Os artistas"**: `team-section.tsx` removido; os retratos dos
+  profissionais com foto entram em "Quem atende", dentro de `about-section.tsx`, abaixo do texto e
+  da foto do grupo (4 colunas no desktop, 2 no celular, cortina `MediaReveal`). Sem nenhuma foto, o
+  bloco não aparece. DESIGN.md atualizado. Testado com fotos temporárias no banco local.
+- **Serviços no celular**: a palavra "Agendar" agora aparece também no celular (à direita, na
+  linha da duração). Antes a linha era link, mas nada indicava que dava para tocar.
+- **Onde estamos**: o CEP não quebra mais no hífen ("86810-" / "250") em telas estreitas.
+- **Olhada visual final** da home inteira em 1440 e 390 px: sem erro de console, sem rolagem
+  horizontal, revelações (títulos, fios, cortinas, carta) terminando em opacidade 1. "O trabalho"
+  e a carta das Assinaturas conferidos.
+- **Fumaça**: `/`, `/agendar`, `/minha-conta` (login demo com (43) 90000-0001 até o painel do
+  cliente), páginas legais e as 11 telas do painel em 1440 e 390 px: tudo 200, sem erro, sem
+  rolagem horizontal.
+- O mapa do Google não carrega no ambiente de nuvem (rede bloqueada); no navegador real carrega.
+- `impeccable`, `web-design-guidelines` e `quality-gate-visual` **não estão instaladas na nuvem**:
+  a revisão foi feita por screenshot. Se quiser a crítica formal, rodar no desktop.
+
+### Pendente (só depende do cliente ou de produção)
+1. Endereço: Orquídea, 626 (no site) × Nova Ucrânia, 309 (colado pelo usuário). Confirmar.
+2. Planos são mensais? O site mostra "por mês".
+3. Aprovar o texto de "Os artistas", os nomes das seções e a Hero B (depois apagar a Hero A).
+4. Dados reais: preços e durações, nomes e **fotos dos barbeiros** (o bloco "Quem atende" só
+   aparece com foto), Facebook, chave Pix, textos legais.
+5. Antes de produção: envio real do código da Minha conta (WhatsApp/SMS), Supabase próprio com
+   seed real, deploy na Vercel.
+
+## ⚡⚡ Atualização 2026-10-14, 2ª sessão no desktop: leia isto primeiro
 
 Projeto é **demo/prévia**: sem Supabase por enquanto (decisão do usuário). Tudo roda no banco local.
 

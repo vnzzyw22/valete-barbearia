@@ -68,10 +68,12 @@ export function ServicesSection({ services, whatsapp }: ServicesSectionProps) {
                     <span className="col-start-2 row-start-1 block text-right text-[clamp(1.25rem,1.8vw,1.5rem)] font-semibold text-white tabular-nums md:col-start-3">
                       {formatPrice(service.price)}
                     </span>
-                    <span className="col-span-2 text-[15px] text-cinza tabular-nums md:col-span-1 md:col-start-2 md:row-start-1 md:text-right">
+                    <span className="col-start-1 text-[15px] text-cinza tabular-nums md:col-start-2 md:row-start-1 md:text-right">
                       {formatServiceDuration(service)}
                     </span>
-                    <span className="hidden text-[15px] font-semibold text-white underline decoration-white/30 underline-offset-[5px] group-hover:decoration-white md:block">
+                    {/* No celular a linha inteira já é o link, mas sem esta palavra nada indica que dá
+                        para tocar: fica à direita, na linha da duração. */}
+                    <span className="col-start-2 row-start-2 justify-self-end self-end text-[15px] font-semibold text-white underline decoration-white/30 underline-offset-[5px] group-hover:decoration-white md:col-start-4 md:row-start-1 md:self-auto">
                       Agendar
                     </span>
                   </Link>
