@@ -27,7 +27,7 @@
 
   /* Tokens legados do Lkas, remapeados para a Valete. Agendamento, painel e páginas legais
      ainda usam estes nomes; trocando o valor aqui eles herdam a identidade sem reescrita.
-     `accent` substitui o antigo `accent`: na Valete a cor de ação é o branco. */
+     `accent` substitui o antigo `brand-red`: na Valete a cor de ação é o branco. */
   --color-accent: var(--valete-branco);
   --color-brand-black: var(--valete-carvao);
   --color-brand-ink: var(--valete-ink);
