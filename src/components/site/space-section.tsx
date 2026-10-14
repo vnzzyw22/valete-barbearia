@@ -11,7 +11,6 @@ interface Photo {
 // Fotos reais da Valete versionadas no projeto (assets-source/fotos → public/fotos). Usadas só
 // enquanto a galeria do painel não tiver fotos publicadas.
 const VERSIONED: Photo[] = [
-  { src: "/fotos/valete-equipe-parede-logo.webp", alt: "Equipe da Valete rindo em frente à parede preta com o logo pintado em branco." },
   { src: "/fotos/valete-fade-perfil.webp", alt: "Perfil de um cliente com degradê recém-feito e risca marcada." },
   { src: "/fotos/valete-barbeiro-secador.webp", alt: "Barbeiro de boné secando o cabelo de um cliente reclinado na cadeira." },
   { src: "/fotos/valete-barba-navalha-close.webp", alt: "Acabamento da barba com navalha, visto de perto." },
@@ -21,6 +20,7 @@ const VERSIONED: Photo[] = [
 // A primeira foto ocupa metade da largura e duas linhas; as outras quatro formam pares ao lado.
 // Todas em 4:5: a grande tem a largura de duas pequenas + o gutter, então as alturas fecham
 // (diferença de ~0,25 gutter). Sem margens negativas nem sobreposição.
+const STRIP = ["md:col-span-3"];
 const LAYOUT = ["col-span-2 md:col-span-6 md:row-span-2", "md:col-span-3", "md:col-span-3", "md:col-span-3", "md:col-span-3"];
 
 export function SpaceSection({ gallery }: { gallery: GalleryPhoto[] }) {
@@ -28,6 +28,9 @@ export function SpaceSection({ gallery }: { gallery: GalleryPhoto[] }) {
     gallery.length > 0
       ? gallery.map((p, i) => ({ src: p.url, alt: `Foto da Valete Barbearia ${i + 1}` }))
       : VERSIONED;
+  // Fotos versionadas: faixa de 4 iguais, recortadas acima da marca d'água do bigode.
+  const strip = gallery.length === 0;
+  const layout = strip ? STRIP : LAYOUT;
 
   return (
     <section id="espaco" aria-labelledby="espaco-titulo" className="scroll-mt-[72px] bg-ink py-20 md:py-32">
@@ -39,14 +42,14 @@ export function SpaceSection({ gallery }: { gallery: GalleryPhoto[] }) {
         </Reveal>
         <ul className="mt-12 grid grid-cols-2 gap-4 md:mt-16 md:grid-cols-12 md:gap-6">
           {photos.map((photo, i) => (
-            <li key={photo.src} className={LAYOUT[i % LAYOUT.length]}>
-              <div className={`relative overflow-hidden bg-carvao ${i === 0 ? "aspect-[4/5] md:aspect-auto md:h-full" : "aspect-[4/5]"}`}>
+            <li key={photo.src} className={layout[i % layout.length]}>
+              <div className={`relative overflow-hidden bg-carvao ${strip ? "aspect-[10/11]" : i === 0 ? "aspect-[4/5] md:aspect-auto md:h-full" : "aspect-[4/5]"}`}>
                 <Image
                   src={photo.src}
                   alt={photo.alt}
                   fill
-                  sizes={i === 0 ? "(min-width: 768px) 45vw, 100vw" : "(min-width: 768px) 22vw, 50vw"}
-                  className="object-cover"
+                  sizes={!strip && i === 0 ? "(min-width: 768px) 45vw, 100vw" : "(min-width: 768px) 22vw, 50vw"}
+                  className={`object-cover ${strip ? "object-top" : ""}`}
                 />
               </div>
             </li>

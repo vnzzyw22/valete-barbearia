@@ -20,14 +20,18 @@ insert into public.services (id, name, description, price, duration_minutes, dis
   ('00000000-0000-0000-0000-0000000005a3', '[TESTE] Corte e barba', null, 75, 60, 3);
 insert into public.professional_services (professional_id, service_id)
 select p.id, s.id from public.professionals p cross join public.services s;
+-- Endereço e Instagram são REAIS (informados pelo cliente em 2026-10-14: sede na Rua Orquídea;
+-- a Rua Nova Ucrânia, 380 é o endereço anterior). Nome, WhatsApp e horário continuam fictícios
+-- até o cliente confirmar.
 insert into public.business_settings (id, name, whatsapp, instagram, address, business_hours)
-values ('00000000-0000-0000-0000-000000000001', '[TESTE] Valete Barbearia', '5544900000000', null, null,
+values ('00000000-0000-0000-0000-000000000001', '[TESTE] Valete Barbearia', '5544900000000', '@valete_barbearia',
+  'Rua Orquídea, 626 — Jardim das Flores I, Apucarana - PR, 86810-250',
   '{"mon":{"open":"09:00","close":"19:00"},"tue":{"open":"09:00","close":"19:00"},
     "wed":{"open":"09:00","close":"19:00"},"thu":{"open":"09:00","close":"19:00"},
     "fri":{"open":"09:00","close":"19:00"},"sat":{"open":"09:00","close":"17:00"},
     "sun":{"closed":true}}'::jsonb)
 on conflict (id) do update set name = excluded.name, whatsapp = excluded.whatsapp,
-  instagram = null, address = null, business_hours = excluded.business_hours;
+  instagram = excluded.instagram, address = excluded.address, business_hours = excluded.business_hours;
 insert into auth.users (id, email, encrypted_password) values
   ('00000000-0000-0000-0000-0000000000ad', 'admin@teste.local', 'senha-local-de-teste')
 on conflict do nothing;

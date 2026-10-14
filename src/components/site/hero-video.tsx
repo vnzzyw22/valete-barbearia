@@ -6,6 +6,10 @@ import { usePrefersReducedMotion } from "./use-media-query";
 
 export const HERO_VIDEO_SRC = "/videos/valete-hero-v2.mp4";
 export const HERO_POSTER_SRC = "/videos/valete-hero-v2-poster.webp";
+// Fundo da Hero B: o mesmo vídeo a 180×320, já desfocado e escurecido no arquivo (80 KB). Desfoque
+// em tempo real (CSS blur num 720p ampliado) esgotava a decodificação em 1920 px (MEDIA_ERR_DECODE).
+export const HERO_BLUR_VIDEO_SRC = "/videos/valete-hero-v2-blur.mp4";
+export const HERO_BLUR_POSTER_SRC = "/videos/valete-hero-v2-blur-poster.webp";
 
 interface HeroVideoProps {
   className?: string;
@@ -15,6 +19,8 @@ interface HeroVideoProps {
   hideControl?: boolean;
   onPlayingChange?: (playing: boolean) => void;
   videoRef?: React.RefObject<HTMLVideoElement | null>;
+  src?: string;
+  poster?: string;
 }
 
 /**
@@ -25,7 +31,15 @@ interface HeroVideoProps {
  * Lições herdadas do Lkas (CLAUDE.md): `muted` setado antes do play(), play reforçado em
  * loadedmetadata/canplay, camada própria de composição e nenhum z-index negativo em ancestral.
  */
-export function HeroVideo({ className, controlClassName, hideControl, onPlayingChange, videoRef }: HeroVideoProps) {
+export function HeroVideo({
+  className,
+  controlClassName,
+  hideControl,
+  onPlayingChange,
+  videoRef,
+  src = HERO_VIDEO_SRC,
+  poster = HERO_POSTER_SRC,
+}: HeroVideoProps) {
   const reduceMotion = usePrefersReducedMotion();
   const localRef = useRef<HTMLVideoElement>(null);
   const ref = videoRef ?? localRef;
@@ -74,8 +88,8 @@ export function HeroVideo({ className, controlClassName, hideControl, onPlayingC
     <>
       <video
         ref={ref}
-        src={HERO_VIDEO_SRC}
-        poster={HERO_POSTER_SRC}
+        src={src}
+        poster={poster}
         muted
         loop
         playsInline

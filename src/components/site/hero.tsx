@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useRef, useState, type CSSProperties } from "react";
 import { CardIndex, ValeteLogo } from "./card-index";
 import { HERO_LETTERS } from "./hero-letters";
-import { HeroVideo } from "./hero-video";
-import { buttonPrimary, container, textLink } from "./ui";
+import { HERO_BLUR_POSTER_SRC, HERO_BLUR_VIDEO_SRC, HeroVideo } from "./hero-video";
+import { buttonOverMedia, buttonPrimary, container, textLink } from "./ui";
 
 export type HeroVariant = "a" | "b";
 
@@ -118,15 +118,65 @@ function HeroA() {
 }
 
 // ---------------------------------------------------------------------------
-// B — logo em destaque + título + CTA; vídeo no painel vertical enquadrado como carta.
+// B — vídeo como fundo da Hero inteira. O vídeo é vertical (720×1280): esticado em tela cheia
+// ele ficaria ampliado ~2× e cortado em ~65% da altura. Por isso são duas camadas do mesmo
+// arquivo (um download só, o navegador reaproveita):
+//   1. fundo: cobre tudo, desfocado e escurecido — o desfoque esconde a ampliação;
+//   2. nítida: à direita, perto da resolução nativa, dissolvida para a esquerda por máscara,
+//      de modo que logo/título ficam sobre a parte desfocada.
+// A Hero inteira faz o papel da carta: índice "V♠" nos cantos opostos, em diagonal.
 // ---------------------------------------------------------------------------
 function HeroB() {
+  const sharpRef = useRef<HTMLVideoElement>(null);
+  const blurRef = useRef<HTMLVideoElement>(null);
+  const [playing, setPlaying] = useState(false);
+
+  // Um controle só para as duas camadas (WCAG 2.2.2).
+  const toggle = () => {
+    const videos = [sharpRef.current, blurRef.current].filter((v): v is HTMLVideoElement => !!v);
+    if (!videos.length) return;
+    if (videos[0].paused) {
+      for (const v of videos) {
+        v.muted = true;
+        v.play().catch(() => {});
+      }
+    } else for (const v of videos) v.pause();
+  };
+
   return (
-    <section id="topo" className="relative bg-carvao" style={{ paddingTop: NAV_H }}>
-      <div className={`${container} grid min-h-[calc(100svh-72px)] items-center gap-12 py-8 lg:grid-cols-12`}>
-        <div className="order-2 flex flex-col items-start gap-8 lg:order-1 lg:col-span-6 xl:col-span-7">
+    <section id="topo" className="relative isolate min-h-[100svh] overflow-hidden bg-ink">
+      {/* 1. fundo desfocado */}
+      <div aria-hidden="true" className="hero-b-blur absolute inset-0">
+        <HeroVideo
+          videoRef={blurRef}
+          hideControl
+          src={HERO_BLUR_VIDEO_SRC}
+          poster={HERO_BLUR_POSTER_SRC}
+          className="h-full w-full object-cover"
+        />
+      </div>
+
+      {/* 2. vídeo nítido, deslocado para a direita */}
+      <div aria-hidden="true" className="hero-b-sharp v-fade absolute inset-y-0 right-0" style={delay(0.15)}>
+        <HeroVideo
+          videoRef={sharpRef}
+          hideControl
+          onPlayingChange={setPlaying}
+          className="h-full w-full object-cover"
+        />
+      </div>
+
+      {/* véu de leitura: leve, só onde há texto (esquerda no desktop, base no mobile) */}
+      <div aria-hidden="true" className="hero-b-veil pointer-events-none absolute inset-0" />
+
+      <div
+        className={`${container} relative flex min-h-[100svh] flex-col justify-end pb-24 lg:justify-center lg:pb-16`}
+        style={{ paddingTop: `calc(${NAV_H} + 32px)` }}
+      >
+        <CardIndex className="absolute top-[calc(72px+28px)] left-[clamp(20px,5vw,80px)] hidden lg:flex" />
+        <div className="flex max-w-[600px] flex-col items-start gap-8">
           <h1 className="v-enter" style={delay(0.1)}>
-            <ValeteLogo className="w-[clamp(260px,34vw,520px)]" label="Valete — Cut and Beard" />
+            <ValeteLogo className="w-[clamp(240px,34vw,520px)]" label="Valete — Cut and Beard" />
           </h1>
           <p
             style={delay(0.3)}
@@ -138,26 +188,19 @@ function HeroB() {
             <Actions />
           </div>
         </div>
+      </div>
 
-        <div className="order-1 flex justify-center lg:order-2 lg:col-span-6 lg:justify-end xl:col-span-5">
-          <div
-            className="v-enter relative overflow-hidden rounded-[18px] border border-ardosia bg-ink"
-            style={delay(0, { aspectRatio: "9 / 16", width: `min(100%, calc(${FOLD} * 9 / 16))` })}
-          >
-            <HeroVideo className="absolute inset-0 h-full w-full object-cover" controlClassName="bottom-4 left-4" />
-            {/* véu só nos cantos, para o índice ficar legível sobre o vídeo */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0"
-              style={{
-                background:
-                  "radial-gradient(circle at 0 0, rgba(10,10,10,.6), transparent 28%), radial-gradient(circle at 100% 100%, rgba(10,10,10,.6), transparent 28%)",
-              }}
-            />
-            <CardIndex className="absolute top-4 left-4" />
-            <CardIndex className="absolute right-4 bottom-4 rotate-180" />
-          </div>
-        </div>
+      {/* canto inferior direito da "carta", na mesma coluna do conteúdo (em 1920 px não encosta na borda) */}
+      <div className={`${container} pointer-events-none absolute inset-x-0 bottom-8 flex items-end justify-end gap-4`}>
+        <button
+          type="button"
+          onClick={toggle}
+          className={`${buttonOverMedia} pointer-events-auto`}
+          aria-label={playing ? "Pausar vídeo" : "Tocar vídeo"}
+        >
+          {playing ? "Pausar" : "Tocar"}
+        </button>
+        <CardIndex className="rotate-180" />
       </div>
     </section>
   );

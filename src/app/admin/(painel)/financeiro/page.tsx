@@ -1,7 +1,8 @@
+import { AppointmentsRevenue } from "@/components/admin/appointments-revenue";
 import { FinanceView } from "@/components/admin/finance-view";
-import { pageSubtitleClass, pageTitleClass } from "@/components/admin/theme";
+import { pageSubtitleClass, pageTitleClass, sectionTitleClass } from "@/components/admin/theme";
 import { currentMonthISO, shiftMonth } from "@/lib/date";
-import { getTransactionsForRange } from "@/lib/supabase/admin-queries";
+import { getAppointmentsForRange, getTransactionsForRange } from "@/lib/supabase/admin-queries";
 
 const TREND_MONTHS = 6;
 
@@ -50,11 +51,28 @@ export default async function FinanceiroPage(
     };
   });
 
+  // Agendamentos do mês selecionado (fuso fixo -03:00, mesmo do resto do projeto).
+  const nextMonthISO = shiftMonth(monthISO, 1);
+  const appointments = await getAppointmentsForRange(
+    `${monthISO}-01T00:00:00-03:00`,
+    `${nextMonthISO}-01T00:00:00-03:00`,
+  );
+
   return (
     <div>
       <h1 className={pageTitleClass}>Financeiro</h1>
+      <div className="mt-4 max-w-3xl rounded-lg border border-dashed border-white/25 px-5 py-4 text-sm leading-relaxed text-white/70">
+        <p className="font-semibold text-white">Prévia do financeiro</p>
+        <p className="mt-1">
+          Mostra o essencial: o faturamento que vem dos agendamentos e o caixa lançado à mão. Dá
+          para evoluir para algo mais completo, com comissão por barbeiro, formas de pagamento,
+          fechamento de caixa do dia, metas e relatório mensal para o contador.
+        </p>
+      </div>
+      <AppointmentsRevenue appointments={appointments} now={new Date()} />
+      <h2 className={`${sectionTitleClass} mt-10`}>Caixa (lançamentos manuais)</h2>
       <p className={pageSubtitleClass}>
-        Entradas e saídas simples — não é um sistema contábil.
+        Entradas e saídas avulsas: produtos, aluguel, contas. Não é um sistema contábil.
       </p>
       <FinanceView
         monthISO={monthISO}

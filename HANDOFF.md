@@ -4,6 +4,64 @@ Este repositório é a **Valete Barbearia — Cut and Beard**, cópia independen
 O `CLAUDE.md` ainda descreve o Lkas: vale como histórico técnico (arquitetura, lições de bugs),
 **não** como identidade visual. A identidade da Valete está em `DESIGN.md` e `PRODUCT.md`.
 
+## ⚡ Atualização 2026-10-14 (sessão no desktop): leia isto primeiro
+
+Interrompida a pedido do usuário. **O que vem abaixo de "Repositórios" é o estado de 2026-10-13.**
+
+### Feito e conferido no Chrome real (desktop)
+- **Hero B escolhida pelo cliente**, agora com o vídeo de **fundo** (`hero.tsx > HeroB`, classes `.hero-b-*`
+  em `globals.css`). A camada nítida fica à direita e o fundo é `public/videos/valete-hero-v2-blur.mp4`
+  (180×320, já desfocado no arquivo, 80 KB). Com `filter: blur` em tempo real o vídeo dava
+  `MEDIA_ERR_DECODE` em 1920 px. Testado em 1024, 1440 e 1920: tocando, sem erro e sem overflow.
+- **Nova seção "A casa"** (`about-section.tsx`): foto da equipe e serviços principais reais. A história
+  da barbearia é **placeholder explícito** (`ABOUT_PARAGRAPHS = null`), até o cliente mandar o texto.
+- **Nova seção "Onde estamos"** (`location-section.tsx`): endereço, "Como chegar", mapa do Google sem
+  chave (filtro escuro), telefone, Instagram e horário, tudo de `business_settings`. A busca do mapa
+  descarta o trecho "Bairro…" e os parênteses. Testado: com o nome popular do bairro, o Google não marca o pino.
+- "O espaço" ficou com 4 fotos, cortadas acima da marca d'água. "Contato" virou só o fecho com o CTA.
+  Navbar: Serviços · A casa · O espaço · Onde estamos.
+- **Endereço atual** (cliente, 2026-10-14): Rua Orquídea, 626, Jardim das Flores I, Apucarana-PR,
+  86810-250 (pino conferido no Google). Rua Nova Ucrânia, 380 é o endereço anterior. Instagram:
+  @valete_barbearia. Serviços: corte, alinhamento/design de barba, terapia capilar, visagismo.
+
+### Feito mas NÃO testado
+- **Borrão da Hero um pouco menor**, a pedido do cliente: `.hero-b-sharp` passou de 0,78 para 0,88 × a
+  altura e a máscara de 48% para 40%. Ainda não foi visto no navegador.
+- **Login do painel desativado para teste** (`src/lib/admin-login-bypass.ts` + `src/lib/supabase/proxy.ts`
+  + layout do painel). Com `ADMIN_LOGIN_DISABLED=true` no `.env.local`, o servidor entra sozinho com o
+  admin de teste. A chave **só funciona com o banco local** (127.0.0.1/localhost). A tela de login
+  continua no código. Conferido: `/admin` responde 200 sem login.
+- **Financeiro em prévia** (`financeiro/page.tsx` + `components/admin/appointments-revenue.tsx`): aviso
+  de prévia, faturamento realizado e previsto, ticket médio e divisão por profissional e por serviço,
+  calculados dos agendamentos, além do caixa manual que já existia. **Não teve `tsc`, build nem tela.**
+  Rodar `npx tsc --noEmit` antes de qualquer coisa.
+
+### Pendente (pedidos do cliente)
+1. **"Página do cliente"**: perfil com agendamentos, últimos serviços, plano/assinatura e outras ideias.
+   **Nada feito.** Antes, decidir com o cliente:
+   - como o cliente se identifica: link privado por UUID, como `/agendar/pagamento/[id]`, ou código pelo WhatsApp;
+   - se "plano" exige tabela nova (`plans`/`client_plans`, migration aditiva).
+2. Validar a nova largura do borrão com o cliente (screenshot).
+3. Dados que faltam: telefone/WhatsApp real, link do Facebook, texto da história, confirmar o endereço e
+   quais dados podem aparecer. O nome civil do dono e "9 anos de experiência" vieram de um resumo
+   automático e **não** foram publicados.
+4. Depois da aprovação: remover a Hero A (`?hero=a`, `hero-letters.ts`, `public/brand/hero-vale-te.svg`).
+5. Supabase próprio da Valete + seed real (ver "Problemas conhecidos" abaixo).
+
+### Como continuar
+- **Desktop (Windows) do usuário:** o banco de teste roda fora do repositório, em `C:\Users\Protmar\.valete-local-db`
+  (Postgres 17 portátil + PostgREST 12.2.3). Para subir:
+  1. `node_modules/@embedded-postgres/windows-x64/native/bin/postgres.exe -D data -p 54322` (deixar rodando);
+  2. `node up.mjs` (recria o banco);
+  3. `bin/postgrest.exe postgrest.conf`;
+  4. na pasta do repositório: `node scripts/local-db/gateway.mjs` com `JWT_SECRET_FILE=…/jwt-secret.txt PGRST_PORT=3011`;
+  5. `npx next dev -p 3100`.
+
+  O notebook tem só 4 GB: o `next build` falhou por falta de memória. Feche outros programas antes.
+- **Nuvem/celular (Linux):** `bash scripts/local-db/up.sh`, copiar as linhas impressas para `.env.local`
+  e acrescentar as 3 linhas `ADMIN_*` acima se quiser o painel sem login. Depois `npm run dev`.
+- O `test-data.sql` já traz o endereço e o Instagram reais. Serviços, profissionais e WhatsApp continuam `[TESTE]`.
+
 ## Repositórios
 
 - `origin` = `github.com/vnzzyw22/valete-barbearia`, branch `main`. É aqui que se trabalha.

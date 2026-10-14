@@ -7,8 +7,9 @@ import { buttonPrimary, container } from "./ui";
 
 const links = [
   { href: "#servicos", label: "Serviços" },
+  { href: "#sobre", label: "A casa" },
   { href: "#espaco", label: "O espaço" },
-  { href: "#contato", label: "Contato" },
+  { href: "#onde-estamos", label: "Onde estamos" },
 ];
 
 // Transparente sobre a Hero; ao rolar, vira carvão com borda inferior (DESIGN.md > Navbar).

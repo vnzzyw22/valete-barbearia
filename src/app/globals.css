@@ -115,3 +115,35 @@ select option {
     animation: none;
   }
 }
+
+/* Hero B (2026-10-14): vídeo de fundo em duas camadas — ver hero.tsx > HeroB.
+   Sem z-index negativo em ancestral de <video> (lição do Lkas: o vídeo deixa de pintar). */
+.hero-b-blur {
+  /* O arquivo já vem desfocado e escurecido (hero-video.tsx > HERO_BLUR_VIDEO_SRC): nada de
+     filter em tempo real. O scale esconde a borda mais clara do desfoque nas laterais. */
+  transform: scale(1.06);
+}
+.hero-b-sharp {
+  left: 0;
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 40%);
+  mask-image: linear-gradient(to top, transparent 0%, #000 40%);
+}
+.hero-b-veil {
+  background: linear-gradient(to top, rgb(10 10 10 / 0.85) 0%, rgb(10 10 10 / 0.35) 45%, transparent 70%);
+}
+@media (min-width: 1024px) {
+  .hero-b-sharp {
+    left: auto;
+    /* ~0,88 × altura (2026-10-14, pedido do cliente: um pouco menos de borrão): o vídeo nítido
+       fica ~1,1× o tamanho nativo e a parte 100% nítida cresce ~30% (de ~365 para ~475 px em 1440×900) */
+    width: min(68vw, calc(100svh * 0.88));
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 40%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 40%);
+  }
+  .hero-b-veil {
+    /* esquerda: logo e título; topo: links da navbar sobre a parte clara do vídeo */
+    background:
+      linear-gradient(to bottom, rgb(10 10 10 / 0.6) 0, transparent 140px),
+      linear-gradient(to right, rgb(10 10 10 / 0.55) 0%, rgb(10 10 10 / 0.2) 40%, transparent 60%);
+  }
+}
