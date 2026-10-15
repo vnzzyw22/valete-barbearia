@@ -161,7 +161,7 @@ function WorkPhoto({ photo, index, shift }: { photo: Photo; index: number; shift
       </div>
       {photo.caption && (
         <figcaption className="mt-3 flex items-baseline gap-3 text-[15px] text-cinza">
-          <span className="font-semibold text-white tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+          <span className="font-semibold text-latao tabular-nums">{String(index + 1).padStart(2, "0")}</span>
           {photo.caption}
         </figcaption>
       )}
@@ -178,11 +178,11 @@ function WorkProgress({ progress, count }: { progress: MotionValue<number>; coun
   );
   return (
     <div aria-hidden="true" className="absolute inset-x-[clamp(20px,5vw,80px)] bottom-8 flex items-center gap-4">
-      <span className="text-[13px] font-semibold text-white tabular-nums">
+      <span className="text-[13px] font-semibold text-latao tabular-nums">
         {String(current).padStart(2, "0")} / {String(count).padStart(2, "0")}
       </span>
       <span className="relative h-px flex-1 bg-white/15">
-        <motion.span className="absolute inset-0 origin-left bg-white" style={{ scaleX }} />
+        <motion.span className="bg-ouro absolute inset-0 origin-left" style={{ scaleX }} />
       </span>
     </div>
   );

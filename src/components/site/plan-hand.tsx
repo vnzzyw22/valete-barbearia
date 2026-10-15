@@ -37,15 +37,15 @@ function PlanFace({ card }: { card: HandCard }) {
   const special = card.featured;
   const ink = special ? "text-white" : "text-carvao";
   const muted = special ? "text-white/65" : "text-carvao/65";
-  const rule = special ? "border-white/25" : "border-carvao/20";
-  const ruleSoft = special ? "border-white/10" : "border-carvao/10";
+  const rule = special ? "border-latao/55" : "border-carvao/20";
+  const ruleSoft = special ? "border-latao/20" : "border-carvao/10";
   const pip = special ? "bg-latao" : "bg-carvao";
 
   return (
     <article
       aria-label={`Plano ${card.name}`}
       className={`relative flex aspect-[5/7] w-full flex-col overflow-hidden rounded-[22px] select-none ${
-        special ? "bg-carvao ring-1 ring-white/15" : "bg-[#fbfaf7]"
+        special ? "bg-carvao ring-1 ring-latao/40" : "bg-[#fbfaf7]"
       } ${ink}`}
     >
       {/* grão de papel */}
@@ -79,13 +79,13 @@ function PlanFace({ card }: { card: HandCard }) {
 
         {/* filete com naipe */}
         <span aria-hidden="true" className="my-6 flex items-center gap-2.5">
-          <span className={`h-px flex-1 ${special ? "bg-white/20" : "bg-carvao/20"}`} />
-          <Spade className={`w-[10px] ${pip}`} />
-          <span className={`h-px flex-1 ${special ? "bg-white/20" : "bg-carvao/20"}`} />
+          <span className={`h-px flex-1 ${special ? "bg-latao/45" : "bg-carvao/20"}`} />
+          <Spade className={`w-[10px] ${special ? pip : "bg-latao"}`} />
+          <span className={`h-px flex-1 ${special ? "bg-latao/45" : "bg-carvao/20"}`} />
         </span>
 
         <p className="font-display text-[clamp(1.9rem,8vw,2.3rem)] leading-none font-extrabold tracking-[-0.02em] tabular-nums lg:text-[2.3rem]">
-          {card.price}
+          <span className={special ? "text-ouro" : undefined}>{card.price}</span>
         </p>
         <p className={`mt-1.5 text-[14px] ${muted}`}>{card.period}</p>
 
@@ -97,7 +97,7 @@ function PlanFace({ card }: { card: HandCard }) {
             draggable={false}
             className={`mt-6 inline-flex min-h-11 items-center justify-center self-start rounded-full px-5 py-2.5 text-[14px] font-semibold transition-[background-color,transform] duration-200 active:scale-[0.96] ${
               special
-                ? "bg-white text-carvao hover:bg-white/85"
+                ? "bg-ouro text-carvao hover:brightness-110"
                 : "bg-carvao text-white hover:bg-carvao/85 focus-visible:outline-carvao"
             }`}
           >

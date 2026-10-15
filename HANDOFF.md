@@ -12,7 +12,9 @@ Decisão do usuário: o deploy é **só um exemplo visual**, sem banco de dados.
   `test-data.sql`: dados reais da Valete + barbeiros, preços e cliente fictícios). Ao mudar um, mudar o outro;
 - `/agendar` vai até "Agendamento enviado!" sem gravar nada;
 - Minha conta: qualquer WhatsApp, código fixo **123456** (aparece na tela), conta de exemplo do Marcos;
-- painel: a tela de login avisa que a prévia não tem painel;
+- painel: **abre sem senha** (`/admin/login` leva direto ao painel), com dados fictícios gerados em
+  memória por `src/lib/demo-admin.ts` (agenda de 60 dias para trás e 10 à frente, clientes,
+  assinantes, caixa de 6 meses). As ações não salvam nada;
 - o proxy pula a sessão do Supabase (`src/lib/supabase/config.ts`).
 Com as variáveis preenchidas, tudo volta a usar o banco, sem mudança de código. Testado com
 `next build` sem `.env.local` (fluxos completos em 390 px) e de novo com o banco local.

@@ -67,7 +67,7 @@ export function VelocityMarquee({ items, baseVelocity = -2.2, tone = "dark", til
   return (
     <div
       aria-hidden="true"
-      className={`relative z-10 overflow-hidden py-4 md:py-6 ${dark ? "bg-carvao text-white" : "bg-white text-carvao"}`}
+      className={`relative z-10 overflow-hidden py-4 md:py-6 ${dark ? "bg-carvao text-white" : "bg-ouro text-carvao"}`}
       style={tilt ? { transform: `rotate(${tilt}deg) scale(1.04)` } : undefined}
     >
       <motion.div className="flex w-max whitespace-nowrap will-change-transform" style={{ x }}>
@@ -142,7 +142,7 @@ export function SectionMark({ rank, tone = "dark" }: { rank: string; tone?: "dar
       viewport={{ once: true, amount: 1 }}
       transition={{ type: "spring", stiffness: 140, damping: 14 }}
     >
-      <span className="font-display text-[22px] leading-none font-black">{rank}</span>
+      <span className={`font-display text-[22px] leading-none font-black ${tone === "dark" ? "text-ouro" : ""}`}>{rank}</span>
       <Spade className="w-[13px] bg-latao" />
     </motion.span>
   );
@@ -174,7 +174,7 @@ export function GhostRank({
         y: reduceMotion ? 0 : y,
         rotate: reduceMotion ? 0 : rotate,
         color: "transparent",
-        WebkitTextStroke: tone === "dark" ? "1px rgb(255 255 255 / 0.09)" : "1px rgb(18 18 18 / 0.09)",
+        WebkitTextStroke: tone === "dark" ? "1px rgb(197 160 89 / 0.16)" : "1px rgb(138 100 36 / 0.16)",
       }}
     >
       {rank}
@@ -189,7 +189,7 @@ export function ScrollProgress() {
   return (
     <motion.div
       aria-hidden="true"
-      className="fixed inset-x-0 top-0 z-[60] h-[2px] origin-left bg-white"
+      className="bg-ouro fixed inset-x-0 top-0 z-[60] h-[2px] origin-left"
       style={{ scaleX }}
     />
   );

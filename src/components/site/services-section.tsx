@@ -99,7 +99,7 @@ export function ServicesSection({ services, whatsapp }: ServicesSectionProps) {
                         para tocar: fica à direita, na linha da duração. */}
                     <span className="col-start-2 row-start-2 inline-flex items-center gap-1.5 self-end justify-self-end text-[15px] font-semibold underline decoration-carvao/30 underline-offset-[5px] group-hover:decoration-carvao md:col-start-4 md:row-start-1 md:self-auto">
                       Agendar
-                      <span aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-1">
+                      <span aria-hidden="true" className="transition-[transform,color] duration-300 group-hover:translate-x-1 group-hover:text-ouro-escuro">
                         →
                       </span>
                     </span>

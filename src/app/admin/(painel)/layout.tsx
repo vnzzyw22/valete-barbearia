@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { getAdminLoginBypass } from "@/lib/admin-login-bypass";
 import { countPaymentsAwaitingConfirmation } from "@/lib/supabase/admin-queries";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/server";
 import { logout } from "./actions";
 
@@ -11,15 +12,21 @@ export default async function PainelLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  // Vitrine sem banco (prévia): painel aberto, sem senha, com dados fictícios em memória
+  // (src/lib/demo-admin.ts). Nada é gravado.
+  const showcase = !isSupabaseConfigured;
 
-  // O middleware já bloqueia rotas /admin sem sessão; esta checagem aqui é
-  // uma segunda camada de defesa direto no layout do painel.
-  if (!user) {
-    redirect("/admin/login");
+  if (!showcase) {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    // O middleware já bloqueia rotas /admin sem sessão; esta checagem aqui é
+    // uma segunda camada de defesa direto no layout do painel.
+    if (!user) {
+      redirect("/admin/login");
+    }
   }
 
   const pendingPayments = await countPaymentsAwaitingConfirmation();
@@ -32,7 +39,11 @@ export default async function PainelLayout({
           <ValeteLogo className="h-9" label="Valete — painel" />
         </div>
         <AdminNav initialPendingPayments={pendingPayments} />
-        {loginDisabled ? (
+        {showcase ? (
+          <p className="border-t border-white/10 px-4 py-3 text-xs leading-relaxed text-white/60">
+            Demonstração: dados fictícios. Dá para navegar à vontade; as alterações não são salvas.
+          </p>
+        ) : loginDisabled ? (
           // Com o login desativado, "Sair" não faria sentido: o próximo acesso entra de novo sozinho.
           <p className="border-t border-white/10 px-4 py-3 text-xs leading-relaxed text-white/60">
             Login desativado para teste. Reative tirando ADMIN_LOGIN_DISABLED do .env.local.

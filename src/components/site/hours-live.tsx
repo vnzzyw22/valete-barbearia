@@ -77,9 +77,9 @@ export function OpenNowBadge({ hours }: { hours: BusinessHours }) {
         <>
           <span className="relative flex size-2.5" aria-hidden="true">
             {status.open && (
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-white opacity-60 motion-reduce:animate-none" />
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-latao opacity-70 motion-reduce:animate-none" />
             )}
-            <span className={`relative inline-flex size-2.5 rounded-full ${status.open ? "bg-white" : "bg-white/35"}`} />
+            <span className={`relative inline-flex size-2.5 rounded-full ${status.open ? "bg-latao" : "bg-white/35"}`} />
           </span>
           {status.label}
         </>
@@ -103,7 +103,7 @@ export function HoursTable({ hours }: { hours: BusinessHours }) {
           <motion.div
             key={day}
             className={`relative flex items-baseline justify-between gap-6 border-b border-ardosia py-3 transition-colors duration-500 ${
-              isToday ? "bg-white/[0.04]" : ""
+              isToday ? "bg-latao/[0.07]" : ""
             }`}
             initial={{ opacity: 0, x: -16 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -111,7 +111,7 @@ export function HoursTable({ hours }: { hours: BusinessHours }) {
             transition={{ duration: 0.5, delay: i * 0.05, ease: [0.22, 1, 0.36, 1] }}
           >
             <dt className={`flex items-center gap-2 text-[15px] ${isToday ? "font-semibold text-white" : "text-cinza"}`}>
-              {isToday && <span aria-hidden="true" className="size-1.5 rounded-full bg-white" />}
+              {isToday && <span aria-hidden="true" className="size-1.5 rounded-full bg-latao" />}
               {DAY_LABELS[day]}
               {isToday && <span className="sr-only">(hoje)</span>}
             </dt>

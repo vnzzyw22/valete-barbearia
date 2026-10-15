@@ -8,7 +8,11 @@
   --valete-ardosia: #242424;
   --valete-branco: #ffffff;
   --valete-cinza: #a0a0a0;
-  --valete-latao: #c5a059; /* só detalhe: o naipe do índice de carta */
+  --valete-latao: #c5a059; /* dourado base: naipes, filetes, números de destaque */
+  /* Ouro metálico do logo da casa (perfil do WhatsApp): brilho, base e sombra. */
+  --valete-ouro-claro: #f3d892;
+  --valete-ouro-escuro: #8a6424;
+  --valete-ouro-metal: linear-gradient(100deg, #8a6424 0%, #c99a45 22%, #f3d892 46%, #d4ae5c 62%, #a37a33 82%, #8a6424 100%);
 
   --background: var(--valete-carvao);
   --foreground: var(--valete-branco);
@@ -24,6 +28,8 @@
   --color-ardosia: var(--valete-ardosia);
   --color-cinza: var(--valete-cinza);
   --color-latao: var(--valete-latao);
+  --color-ouro-claro: var(--valete-ouro-claro);
+  --color-ouro-escuro: var(--valete-ouro-escuro);
 
   /* Tokens legados do Lkas, remapeados para a Valete. Agendamento, painel e páginas legais
      ainda usam estes nomes; trocando o valor aqui eles herdam a identidade sem reescrita.
@@ -161,5 +167,35 @@ select option {
   .hero-scroll-exit {
     transform: none !important;
     opacity: 1 !important;
+  }
+}
+
+/* Ouro metálico (DESIGN.md > Cores > Ouro). Detalhe, nunca bloco grande: textos curtos de
+   destaque, filetes, a faixa clara e o botão do plano em destaque. O brilho atravessa devagar. */
+.text-ouro {
+  background-image: var(--valete-ouro-metal);
+  background-size: 220% 100%;
+  background-position: 0% 50%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: ouro-brilho 7s ease-in-out infinite alternate;
+}
+.bg-ouro {
+  background-image: var(--valete-ouro-metal);
+  background-size: 220% 100%;
+  background-position: 0% 50%;
+  animation: ouro-brilho 9s ease-in-out infinite alternate;
+}
+@keyframes ouro-brilho {
+  to {
+    background-position: 100% 50%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .text-ouro,
+  .bg-ouro {
+    animation: none;
+    background-position: 40% 50%;
   }
 }

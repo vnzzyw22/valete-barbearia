@@ -336,7 +336,7 @@ export function AgendaWeekView({
                     onClick={() =>
                       setSelection({ kind: "appointment", data: appointment })
                     }
-                    className={`flex items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-xs transition-colors duration-150 ${
+                    className={`group flex items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-xs transition-colors duration-150 ${
                       isSelected
                         ? "bg-accent text-carvao"
                         : "bg-white/[0.06] text-white/85 hover:bg-accent hover:text-carvao"
@@ -354,13 +354,13 @@ export function AgendaWeekView({
                           semana, "Nome · até HH:MM" cortava o término. */}
                       {multipleProfessionals && !professionalFilter && (
                         <span
-                          className={`truncate text-[11px] ${isSelected ? "text-white/80" : "text-white/60"}`}
+                          className={`truncate text-[11px] ${isSelected ? "text-carvao/70" : "text-white/60 group-hover:text-carvao/70"}`}
                         >
                           {appointment.professional?.name ?? "Sem profissional"}
                         </span>
                       )}
                       <span
-                        className={`truncate text-[11px] ${isSelected ? "text-white/80" : "text-white/45"}`}
+                        className={`truncate text-[11px] ${isSelected ? "text-carvao/70" : "text-white/45 group-hover:text-carvao/70"}`}
                       >
                         até {timeLabel(appointment.ends_at)}
                       </span>

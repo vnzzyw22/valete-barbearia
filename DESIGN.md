@@ -71,12 +71,17 @@ Neutros frios, sem calor, para casar com as fotos dessaturadas. O branco é a co
 | `ardosia` | `#242424` | Bordas e divisores; mesmo tom do fundo do logo original |
 | `branco` | `#FFFFFF` | Texto principal, logo, botão primário, foco |
 | `cinza` | `#A0A0A0` | Texto secundário (7,2:1 sobre `carvao`) |
-| `latao` | `#C5A059` | **Só detalhe:** o naipe do índice de carta. Nunca em texto corrido, botão ou fundo |
+| `latao` | `#C5A059` | Dourado base: naipes, filetes, números e pontos de destaque. Nunca em texto corrido |
+| ouro metálico | `#8A6424 → #F3D892 → #8A6424` | Gradiente do logo da casa (perfil do WhatsApp), com brilho lento (`.text-ouro`, `.bg-ouro`) |
 
 ### Regras
 
-- **Sem "preto + dourado premium".** O latão aparece em um ponto pequeno. Se ele começar a se
-  espalhar, a peça está virando clichê.
+- **Ouro como charme, não como tema** (pedido do usuário, 2026-10-14, a partir do logo dourado do
+  perfil da casa). Onde ele entra: o fim do título da Hero ("hora marcada."), os postos dos índices
+  de seção, a carta especial (filetes, preço e botão), a faixa clara em movimento, a barra de
+  progresso, o dia de hoje e o ponto "Aberto agora", os números de O trabalho e o ícone de Minha
+  conta. Nada de fundo de seção, texto corrido ou botão primário dourado: se começar a se
+  espalhar, vira o clichê "preto + dourado premium".
 - Texto sobre vídeo ou foto ganha véu (`ink` a 35–60%) medido no quadro mais claro.
 - Os tokens legados `brand-*` do Lkas foram remapeados para estes valores, para que o
   agendamento, o painel e as páginas legais herdem a identidade sem reescrita (ver

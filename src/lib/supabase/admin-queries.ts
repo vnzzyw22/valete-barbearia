@@ -1,3 +1,13 @@
+import {
+  demoAppointmentsForRange,
+  demoClients,
+  demoPlans,
+  demoProfessionals,
+  demoServices,
+  demoSubscriptions,
+  demoTransactionsForRange,
+} from "@/lib/demo-admin";
+import { isSupabaseConfigured } from "./config";
 import { createClient } from "./server";
 import { releaseExpiredReservations } from "./reservations";
 import type {
@@ -16,6 +26,7 @@ import type {
 // "_admin_all"). Usar só dentro de src/app/admin/**.
 
 export async function getAllServices(): Promise<AdminService[]> {
+  if (!isSupabaseConfigured) return demoServices();
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("services")
@@ -41,6 +52,7 @@ export async function getAppointmentsForRange(
   fromISO: string,
   toISO: string,
 ): Promise<AdminAppointment[]> {
+  if (!isSupabaseConfigured) return demoAppointmentsForRange(fromISO, toISO);
   // Reserva de sinal vencida vira "expirada" antes de a equipe olhar.
   await releaseExpiredReservations();
 
@@ -64,6 +76,7 @@ export async function getBlockedSlotsForRange(
   fromISO: string,
   toISO: string,
 ): Promise<AdminBlockedSlot[]> {
+  if (!isSupabaseConfigured) return [];
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("blocked_slots")
@@ -81,6 +94,7 @@ export async function getBlockedSlotsForRange(
 }
 
 export async function getAllClients(): Promise<AdminClient[]> {
+  if (!isSupabaseConfigured) return demoClients();
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("clients")
@@ -96,6 +110,7 @@ export async function getAllClients(): Promise<AdminClient[]> {
 }
 
 export async function getAllGalleryPhotos(): Promise<AdminGalleryPhoto[]> {
+  if (!isSupabaseConfigured) return [];
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("gallery_photos")
@@ -114,6 +129,7 @@ export async function getTransactionsForRange(
   fromDateISO: string,
   toDateISO: string,
 ): Promise<AdminTransaction[]> {
+  if (!isSupabaseConfigured) return demoTransactionsForRange(fromDateISO, toDateISO);
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("transactions")
@@ -131,6 +147,7 @@ export async function getTransactionsForRange(
 }
 
 export async function getAllProfessionals(): Promise<AdminProfessional[]> {
+  if (!isSupabaseConfigured) return demoProfessionals();
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("professionals")
@@ -157,6 +174,7 @@ export async function getAllProfessionals(): Promise<AdminProfessional[]> {
 // avisados pelo cliente e reservas vencidas de horários que ainda não
 // passaram (cliente que pagou atrasado). A ordem de urgência fica na tela.
 export async function getPaymentQueue(): Promise<AdminAppointment[]> {
+  if (!isSupabaseConfigured) return [];
   await releaseExpiredReservations();
 
   const supabase = await createClient();
@@ -178,6 +196,7 @@ export async function getPaymentQueue(): Promise<AdminAppointment[]> {
 
 // Pagamentos que o cliente disse ter feito e a equipe ainda não conferiu.
 export async function countPaymentsAwaitingConfirmation(): Promise<number> {
+  if (!isSupabaseConfigured) return 0;
   await releaseExpiredReservations();
 
   const supabase = await createClient();
@@ -197,6 +216,7 @@ export async function countPaymentsAwaitingConfirmation(): Promise<number> {
 
 // Assinaturas: todos os planos (inclusive inativos) e todos os assinantes.
 export async function getAllPlans(): Promise<AdminPlan[]> {
+  if (!isSupabaseConfigured) return demoPlans();
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("plans")
@@ -212,6 +232,7 @@ export async function getAllPlans(): Promise<AdminPlan[]> {
 }
 
 export async function getAllSubscriptions(): Promise<AdminSubscription[]> {
+  if (!isSupabaseConfigured) return demoSubscriptions();
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("subscriptions")

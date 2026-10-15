@@ -10,7 +10,12 @@ import { buttonOverMedia, buttonPrimary, container, textLink } from "./ui";
 
 export type HeroVariant = "a" | "b";
 
-const HEADLINE = "Corte e barba, com hora marcada.";
+// O fim da frase leva o ouro do logo (DESIGN.md > Cores > Ouro).
+const HEADLINE = (
+  <>
+    Corte e barba, com <span className="text-ouro">hora marcada.</span>
+  </>
+);
 const NAV_H = "72px";
 // Altura útil da primeira dobra (sem navbar e respiro vertical).
 const FOLD = `(100svh - ${NAV_H} - 64px)`;

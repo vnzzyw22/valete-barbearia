@@ -6,12 +6,12 @@ import { isSupabaseConfigured, supabaseAnonKey, supabaseUrl } from "@/lib/supaba
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
 
-  // Sem Supabase configurado não há sessão para renovar. O painel cai na tela de login.
+  // Vitrine sem banco (prévia): não há sessão para renovar e o painel abre sem senha, com dados
+  // fictícios. A tela de login leva direto ao painel.
   if (!isSupabaseConfigured) {
-    const { pathname } = request.nextUrl;
-    if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
+    if (request.nextUrl.pathname === "/admin/login") {
       const url = request.nextUrl.clone();
-      url.pathname = "/admin/login";
+      url.pathname = "/admin";
       return NextResponse.redirect(url);
     }
     return supabaseResponse;
