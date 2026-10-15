@@ -35,7 +35,21 @@ export function TitleReveal({ children, delay = 0 }: { children: ReactNode; dela
 
 // Linha de lista tabular (Serviços, planos): o fio de baixo se desenha da esquerda para a direita
 // e o conteúdo acende logo depois — como uma tabela de preços sendo escrita, linha a linha.
-export function RuledItem({ children, index, className }: { children: ReactNode; index: number; className?: string }) {
+export function RuledItem({
+  children,
+  index,
+  className,
+  lineClassName = "bg-ardosia",
+  slideFrom = 0,
+}: {
+  children: ReactNode;
+  index: number;
+  className?: string;
+  // Cor do fio (em fundo branco, o fio é escuro).
+  lineClassName?: string;
+  // Deslocamento horizontal de entrada do conteúdo, em px (linhas alternadas em Serviços).
+  slideFrom?: number;
+}) {
   const delay = Math.min(index, 8) * 0.07;
   return (
     <motion.li
@@ -45,13 +59,16 @@ export function RuledItem({ children, index, className }: { children: ReactNode;
       viewport={{ once: true, amount: 0.5 }}
     >
       <motion.div
-        variants={{ hidden: { opacity: 0 }, shown: { opacity: 1, transition: { duration: 0.6, delay: delay + 0.15 } } }}
+        variants={{
+          hidden: { opacity: 0, x: slideFrom },
+          shown: { opacity: 1, x: 0, transition: { duration: slideFrom ? 0.9 : 0.6, delay: delay + 0.15, ease: EASE_OUT } },
+        }}
       >
         {children}
       </motion.div>
       <motion.span
         aria-hidden="true"
-        className="absolute inset-x-0 bottom-0 h-px origin-left bg-ardosia"
+        className={`absolute inset-x-0 bottom-0 h-px origin-left ${lineClassName}`}
         variants={{
           hidden: { scaleX: 0 },
           shown: { scaleX: 1, transition: { duration: 0.9, delay, ease: EASE_OUT } },

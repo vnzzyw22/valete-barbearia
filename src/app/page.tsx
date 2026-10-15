@@ -2,6 +2,7 @@ import { AboutSection } from "@/components/site/about-section";
 import { ContactSection } from "@/components/site/contact-section";
 import { Footer } from "@/components/site/footer";
 import { Hero, type HeroVariant } from "@/components/site/hero";
+import { ScrollProgress, VelocityMarquee } from "@/components/site/kinetics";
 import { LocationSection } from "@/components/site/location-section";
 import { MotionProvider } from "@/components/site/motion-provider";
 import { Navbar } from "@/components/site/navbar";
@@ -53,13 +54,27 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       {jsonLd && (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       )}
+      <ScrollProgress />
       <Navbar />
       <main id="conteudo" className="flex flex-1 flex-col">
         <Hero variant={variant} />
         <PlansSection plans={plans} whatsapp={business?.whatsapp ?? null} />
+        {/* Faixas em movimento entre seções (DESIGN.md > Movimento > Ritmo), levemente inclinadas
+            sobre a emenda. Os nomes vêm dos serviços cadastrados. */}
+        <div className="relative z-20 -my-5 md:-my-7">
+          <VelocityMarquee items={services.map((s) => s.name)} tone="dark" tilt={-2} />
+        </div>
         <ServicesSection services={services} whatsapp={business?.whatsapp ?? null} />
         <AboutSection professionals={professionals} />
         <SpaceSection gallery={gallery} />
+        <div className="relative z-20 -my-5 md:-my-7">
+          <VelocityMarquee
+            items={[business?.name ?? "Valete", "Cut and Beard", "Com hora marcada"]}
+            tone="light"
+            tilt={2}
+            baseVelocity={1.8}
+          />
+        </div>
         <LocationSection business={business} />
         <ContactSection business={business} />
       </main>

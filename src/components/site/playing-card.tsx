@@ -20,6 +20,8 @@ interface PlayingCardProps {
   radius?: string;
   // Inclinação de repouso, em graus (a carta "pousada na mesa").
   restTilt?: number;
+  // Atraso da entrada (cartas de uma mão sendo dadas uma depois da outra).
+  delay?: number;
 }
 
 const MAX_TILT = 12;
@@ -29,7 +31,7 @@ const MAX_TILT = 12;
 // 2. com o mouse em cima, inclina em 3D na direção do ponteiro, e uma luz fria acompanha a face.
 // Toque não inclina (no celular o dedo cobriria a carta). Com movimento reduzido, o MotionConfig
 // torna a virada instantânea e o handler não inclina.
-export function PlayingCard({ children, className, radius = "rounded-[22px]", restTilt = -1.5 }: PlayingCardProps) {
+export function PlayingCard({ children, className, radius = "rounded-[22px]", restTilt = -1.5, delay = 0 }: PlayingCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
 
@@ -72,10 +74,10 @@ export function PlayingCard({ children, className, radius = "rounded-[22px]", re
         whileInView={{ rotateY: 0, rotateZ: restTilt, y: 0, opacity: 1 }}
         viewport={{ once: true, amount: 0.45 }}
         transition={{
-          opacity: { duration: 0.35 },
-          y: { type: "spring", stiffness: 70, damping: 15 },
-          rotateZ: { type: "spring", stiffness: 70, damping: 13 },
-          rotateY: { duration: 1.15, delay: 0.25, ease: EASE_OUT },
+          opacity: { duration: 0.35, delay },
+          y: { type: "spring", stiffness: 70, damping: 15, delay },
+          rotateZ: { type: "spring", stiffness: 70, damping: 13, delay },
+          rotateY: { duration: 1.15, delay: delay + 0.25, ease: EASE_OUT },
         }}
       >
         <motion.div

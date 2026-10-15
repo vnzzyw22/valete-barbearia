@@ -195,7 +195,7 @@ nunca o mesmo fade em toda seção. Vocabulário em `src/components/site/motion.
 - **A carta** (`playing-card.tsx`, Assinaturas e Minha conta): entra virada para baixo (verso em
   grafite com o logo), é "dada" na mesa (sobe com mola) e vira para a face; depois, com o mouse,
   inclina em 3D até 12° na direção do ponteiro, com uma luz fria acompanhando e a sombra no chão
-  se deslocando. Toque não inclina. É o gesto-assinatura do site: não repetir em outro lugar.
+  se deslocando. Toque não inclina. É o gesto-assinatura do site: fica na mão de cartas das Assinaturas e na Minha conta.
 - **Títulos de seção** (`TitleReveal`): o texto sobe de dentro da própria linha (máscara).
 - **Listas tabulares** (`RuledItem`, Serviços e planos): o fio se desenha da esquerda para a
   direita, linha a linha (0,07s entre linhas), e o conteúdo acende logo depois.
@@ -208,6 +208,31 @@ nunca o mesmo fade em toda seção. Vocabulário em `src/components/site/motion.
 - Armadilha conhecida: quem observa a entrada na tela (`whileInView`) precisa ser o elemento
   visível — o texto escondido dentro da máscara ou um quadro com `clip-path` fechado nunca
   "aparece" para o IntersectionObserver.
+
+### Ritmo (2ª rodada, 2026-10-14)
+
+Pedido do usuário: o site estava "genérico, tudo igual". Cada seção ganhou um gesto próprio,
+ligado à rolagem e pensado para o celular (`kinetics.tsx`, `plan-hand.tsx`, `hours-live.tsx`):
+
+- **Índice de carta por seção** (`SectionMark`): posto + naipe em latão acima do título —
+  Assinaturas A, Serviços K, Os artistas Q, O trabalho J (o valete), Onde estamos 10. O mesmo
+  posto aparece gigante e vazado atrás da seção (`GhostRank`), em parallax lento.
+- **Assinaturas = a mão de cartas** (`plan-hand.tsx`): cada plano é uma carta. No computador as
+  cartas chegam empilhadas, são dadas viradas e se abrem em leque conforme a seção sobe; o mouse
+  levanta a carta da mão. No celular é um baralho: arrasta-se a carta da frente para o lado (ou
+  setas), e a próxima assume. A carta deixou de ser o único bloco branco.
+- **Faixas em movimento** (`VelocityMarquee`): duas faixas levemente inclinadas sobre as emendas
+  (nomes dos serviços; nome + "Cut and Beard"), que andam sozinhas e aceleram/invertem com a
+  velocidade da rolagem.
+- **Serviços é o lado branco da carta**: única seção clara. Linhas entram de lados alternados,
+  o preço conta do zero (`CountUpPrice`), o título fica preso no desktop.
+- **Os artistas:** a foto da equipe começa recolhida (recorte com cantos) e se abre até a largura
+  inteira enquanto sobe.
+- **O trabalho:** a seção prende na tela e a rolagem anda a fila de fotos para o lado, com
+  parallax dentro dos quadros e contador "02 / 04". Com movimento reduzido vira fileira de arrastar.
+- **Onde estamos:** selo "Aberto agora · fecha às 20:00" calculado pela hora de Brasília, e o dia
+  de hoje aceso na tabela.
+- Barra de progresso de 2px no topo; botões encolhem levemente ao toque.
 
 ## Componentes
 

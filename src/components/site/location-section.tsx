@@ -1,8 +1,8 @@
-import { formatBusinessHours } from "@/lib/business-hours";
 import type { BusinessSettings } from "@/lib/supabase/types";
 import { getWhatsappLink } from "@/lib/whatsapp";
+import { HoursTable, OpenNowBadge } from "./hours-live";
+import { GhostRank, SectionMark } from "./kinetics";
 import { TitleReveal } from "./motion";
-import { Reveal } from "./reveal";
 import { container, sectionTitle, textLink } from "./ui";
 
 function instagramHref(handle: string) {
@@ -51,15 +51,18 @@ export function LocationSection({ business }: { business: BusinessSettings | nul
   );
   const directionsHref = `https://www.google.com/maps/dir/?api=1&destination=${mapQuery}`;
   const embedSrc = `https://maps.google.com/maps?q=${mapQuery}&z=16&output=embed`;
-  const hours = formatBusinessHours(business?.business_hours ?? {});
+  const hours = business?.business_hours ?? {};
+  const hasHours = Object.keys(hours).length > 0;
   const whatsappHref = getWhatsappLink(business?.whatsapp ?? null, "Olá! Vim pelo site da Valete.");
   const phone = business?.whatsapp ? formatPhone(business.whatsapp) : null;
   const instagram = business?.instagram ? instagramHref(business.instagram) : null;
 
   return (
-    <section id="onde-estamos" aria-labelledby="onde-titulo" className="scroll-mt-[72px] bg-ink py-20 md:py-32">
-      <div className={`${container} grid gap-12 lg:grid-cols-12 lg:gap-10`}>
+    <section id="onde-estamos" aria-labelledby="onde-titulo" className="relative scroll-mt-[72px] overflow-hidden bg-ink py-20 md:py-32">
+      <GhostRank rank="10" className="-bottom-[0.18em] -left-[0.05em] text-[clamp(14rem,36vw,32rem)]" />
+      <div className={`${container} relative grid gap-12 lg:grid-cols-12 lg:gap-10`}>
         <div className="flex flex-col lg:col-span-5">
+          <SectionMark rank="10" />
           <h2 id="onde-titulo" className={sectionTitle}>
             <TitleReveal>Onde estamos</TitleReveal>
           </h2>
@@ -72,6 +75,11 @@ export function LocationSection({ business }: { business: BusinessSettings | nul
               Como chegar
             </a>
           </address>
+          {hasHours && (
+            <div>
+              <OpenNowBadge hours={hours} />
+            </div>
+          )}
 
           {(phone || instagram) && (
             <ul className="mt-8 space-y-3 border-t border-ardosia pt-6 text-[17px]">
@@ -94,19 +102,10 @@ export function LocationSection({ business }: { business: BusinessSettings | nul
             </ul>
           )}
 
-          {hours.length > 0 && (
+          {hasHours && (
             <div className="mt-10">
               <h3 className="text-lg font-bold [font-stretch:112%] text-white">Horário</h3>
-              <dl className="mt-4 border-t border-ardosia">
-                {hours.map(({ label, value }) => (
-                  <div key={label} className="flex items-baseline justify-between gap-6 border-b border-ardosia py-3">
-                    <dt className="text-[15px] text-cinza">{label}</dt>
-                    <dd className={`text-[15px] tabular-nums ${value === "Fechado" ? "text-cinza" : "text-white"}`}>
-                      <Reveal>{value}</Reveal>
-                    </dd>
-                  </div>
-                ))}
-              </dl>
+              <HoursTable hours={hours} />
             </div>
           )}
         </div>
