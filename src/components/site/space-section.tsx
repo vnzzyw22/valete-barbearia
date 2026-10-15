@@ -36,8 +36,8 @@ const VERSIONED: Photo[] = [
   },
   {
     src: "/fotos/valete-barba-navalha-close.webp",
-    alt: "Navalha acertando o contorno de uma barba grisalha, visto bem de perto.",
-    caption: "Barba na navalha",
+    alt: "Navalha acertando o pezinho, o contorno da nuca, visto bem de perto.",
+    caption: "Pezinho na navalha",
     position: "40% 42%",
   },
 ];
