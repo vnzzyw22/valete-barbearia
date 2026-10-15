@@ -108,9 +108,19 @@ export function PlayingCard({ children, className, radius = "rounded-[22px]", re
             aria-hidden="true"
             className={`absolute inset-0 ${radius} flex items-center justify-center overflow-hidden bg-grafite ring-1 ring-white/20 [backface-visibility:hidden] [transform:rotateY(180deg)]`}
           >
+            {/* trama de losangos, como o verso de um baralho */}
+            <span
+              className="absolute inset-3 rounded-[14px]"
+              style={{
+                backgroundImage:
+                  "repeating-linear-gradient(45deg, rgb(255 255 255 / 0.06) 0 1px, transparent 1px 14px), repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.06) 0 1px, transparent 1px 14px)",
+              }}
+            />
             <span className={`absolute inset-3 ${radius} border border-white/25`} />
             <span className={`absolute inset-6 ${radius} border border-white/10`} />
-            <ValeteLogo className="w-[58%]" label="" />
+            <span className="relative flex aspect-square w-[64%] items-center justify-center rounded-full border border-white/20 bg-grafite">
+              <ValeteLogo className="w-[78%]" label="" />
+            </span>
           </div>
         </motion.div>
       </motion.div>

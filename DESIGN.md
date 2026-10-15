@@ -221,6 +221,11 @@ ligado à rolagem e pensado para o celular (`kinetics.tsx`, `plan-hand.tsx`, `ho
   cartas chegam empilhadas, são dadas viradas e se abrem em leque conforme a seção sobe; o mouse
   levanta a carta da mão. No celular é um baralho: arrasta-se a carta da frente para o lado (ou
   setas), e a próxima assume. A carta deixou de ser o único bloco branco.
+  Face desenhada como carta impressa: moldura de filete duplo, pips de espada nos cantos, naipe
+  grande em marca d'água, filete com naipe entre nome e preço e grão de papel. O plano em destaque
+  é a carta especial: face carvão com naipes em latão. O verso tem trama de losangos e o logo num
+  medalhão.
+- **Minha conta no topo:** botão vazado com ícone, sempre visível na barra (celular e computador).
 - **Faixas em movimento** (`VelocityMarquee`): duas faixas levemente inclinadas sobre as emendas
   (nomes dos serviços; nome + "Cut and Beard"), que andam sozinhas e aceleram/invertem com a
   velocidade da rolagem.

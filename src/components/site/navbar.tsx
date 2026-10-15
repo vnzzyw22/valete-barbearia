@@ -60,28 +60,24 @@ export function Navbar() {
               </li>
             ))}
           </ul>
-          <Link
-            href="/minha-conta"
-            className={`text-[15px] font-semibold transition-colors duration-200 hover:text-white ${
-              solid ? "text-cinza" : "text-white/90"
-            }`}
-          >
-            Minha conta
-          </Link>
+          <AccountButton />
           <Link href="/agendar" className={`${buttonPrimary} min-h-10 px-6 py-2 text-sm`}>
             Agendar
           </Link>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          className="-mr-2 flex min-h-11 items-center px-2 text-[15px] font-semibold text-white lg:hidden"
-          aria-expanded={open}
-          aria-controls="menu-mobile"
-        >
-          {open ? "Fechar" : "Menu"}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <AccountButton />
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            className="-mr-2 flex min-h-11 items-center px-2 text-[15px] font-semibold text-white"
+            aria-expanded={open}
+            aria-controls="menu-mobile"
+          >
+            {open ? "Fechar" : "Menu"}
+          </button>
+        </div>
       </nav>
 
       {open && (
@@ -116,5 +112,22 @@ export function Navbar() {
         </div>
       )}
     </header>
+  );
+}
+
+// Atalho para a área do cliente, sempre visível no topo (celular e computador): pill vazado,
+// para não competir com o "Agendar" sólido.
+function AccountButton() {
+  return (
+    <Link
+      href="/minha-conta"
+      className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/30 bg-white/[0.06] px-4 text-sm font-semibold whitespace-nowrap text-white backdrop-blur-md transition-[background-color,border-color,transform] duration-200 hover:border-white/60 hover:bg-white/12 active:scale-[0.96]"
+    >
+      <svg aria-hidden="true" viewBox="0 0 20 20" className="size-4 fill-none stroke-current" strokeWidth="1.6">
+        <circle cx="10" cy="6.5" r="3.25" />
+        <path d="M3.5 17c.9-3.2 3.4-5 6.5-5s5.6 1.8 6.5 5" strokeLinecap="round" />
+      </svg>
+      Minha conta
+    </Link>
   );
 }

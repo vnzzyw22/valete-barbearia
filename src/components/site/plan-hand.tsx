@@ -10,7 +10,7 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { useRef, useState, type MouseEvent } from "react";
-import { CardIndex } from "./card-index";
+import { CardIndex, Spade } from "./card-index";
 import { PlayingCard } from "./playing-card";
 import { useMediaQuery } from "./use-media-query";
 
@@ -24,26 +24,70 @@ export interface HandCard {
   featured: boolean;
 }
 
-// Face branca da carta de um plano (a mesma da carta de antes, agora uma por plano).
+// Grão de papel de carta (ruído fractal em SVG, embutido): quase invisível, tira o "plástico" da face.
+const PAPER_GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
+
+// Face da carta de um plano, desenhada como carta de baralho impressa (DESIGN.md > Assinaturas):
+// moldura de filete duplo com pips de espada nos cantos, índice "V ♠" nos dois cantos (o de baixo
+// invertido), um naipe grande em marca d'água ao centro, filete com naipe separando o nome do
+// preço e grão de papel. O plano em destaque é a carta "especial" do baralho: face carvão,
+// filetes brancos e naipe em latão.
 function PlanFace({ card }: { card: HandCard }) {
+  const special = card.featured;
+  const ink = special ? "text-white" : "text-carvao";
+  const muted = special ? "text-white/65" : "text-carvao/65";
+  const rule = special ? "border-white/25" : "border-carvao/20";
+  const ruleSoft = special ? "border-white/10" : "border-carvao/10";
+  const pip = special ? "bg-latao" : "bg-carvao";
+
   return (
     <article
       aria-label={`Plano ${card.name}`}
-      className="relative flex aspect-[5/7] w-full flex-col rounded-[22px] bg-white text-carvao select-none"
+      className={`relative flex aspect-[5/7] w-full flex-col overflow-hidden rounded-[22px] select-none ${
+        special ? "bg-carvao ring-1 ring-white/15" : "bg-[#fbfaf7]"
+      } ${ink}`}
     >
-      <CardIndex tone="face" className="absolute top-5 left-5" />
-      <CardIndex tone="face" className="absolute right-5 bottom-5 rotate-180" />
+      {/* grão de papel */}
+      <span
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-0 ${special ? "opacity-[0.07] mix-blend-screen" : "opacity-[0.09] mix-blend-multiply"}`}
+        style={{ backgroundImage: PAPER_GRAIN }}
+      />
+      {/* moldura de filete duplo */}
+      <span aria-hidden="true" className={`pointer-events-none absolute inset-[12px] rounded-[14px] border ${rule}`} />
+      <span aria-hidden="true" className={`pointer-events-none absolute inset-[17px] rounded-[10px] border ${ruleSoft}`} />
+      {/* pips nos cantos da moldura interna */}
+      {["top-[24px] right-[24px]", "bottom-[24px] left-[24px] rotate-180"].map((pos) => (
+        <Spade key={pos} className={`absolute w-[9px] opacity-40 ${pos} ${pip}`} />
+      ))}
+      {/* naipe grande em marca d'água */}
+      <Spade
+        className={`pointer-events-none absolute top-1/2 left-1/2 w-[58%] -translate-x-1/2 -translate-y-1/2 ${
+          special ? "bg-white/[0.035]" : "bg-carvao/[0.035]"
+        }`}
+      />
 
-      <div className="flex flex-1 flex-col justify-center px-10 py-14">
-        <h3 className="font-display max-w-[11ch] text-[clamp(1.6rem,6.5vw,2rem)] leading-[0.98] font-extrabold tracking-[-0.01em] lg:text-[2rem]">
+      <CardIndex tone={special ? "dark" : "face"} className="absolute top-[26px] left-[26px]" />
+      <CardIndex tone={special ? "dark" : "face"} className="absolute right-[26px] bottom-[26px] rotate-180" />
+
+      <div className="relative flex flex-1 flex-col justify-center px-[52px] py-16">
+        <h3 className="font-display max-w-[11ch] text-[clamp(1.5rem,6vw,1.85rem)] leading-[0.98] font-extrabold tracking-[-0.01em] lg:text-[1.85rem]">
           {card.name}
         </h3>
-        {card.details && <p className="mt-3 max-w-[26ch] text-[15px] leading-snug text-carvao/70">{card.details}</p>}
+        {card.details && <p className={`mt-2.5 max-w-[24ch] text-[14px] leading-snug ${muted}`}>{card.details}</p>}
 
-        <p className="font-display mt-8 text-[clamp(2.1rem,9vw,2.6rem)] leading-none font-extrabold tracking-[-0.02em] tabular-nums lg:text-[2.6rem]">
+        {/* filete com naipe */}
+        <span aria-hidden="true" className="my-6 flex items-center gap-2.5">
+          <span className={`h-px flex-1 ${special ? "bg-white/20" : "bg-carvao/20"}`} />
+          <Spade className={`w-[10px] ${pip}`} />
+          <span className={`h-px flex-1 ${special ? "bg-white/20" : "bg-carvao/20"}`} />
+        </span>
+
+        <p className="font-display text-[clamp(1.9rem,8vw,2.3rem)] leading-none font-extrabold tracking-[-0.02em] tabular-nums lg:text-[2.3rem]">
           {card.price}
         </p>
-        <p className="mt-2 text-[15px] text-carvao/70">{card.period}</p>
+        <p className={`mt-1.5 text-[14px] ${muted}`}>{card.period}</p>
 
         {card.href && (
           <a
@@ -51,7 +95,11 @@ function PlanFace({ card }: { card: HandCard }) {
             target="_blank"
             rel="noopener noreferrer"
             draggable={false}
-            className="mt-8 inline-flex min-h-11 items-center justify-center self-start rounded-full bg-carvao px-6 py-3 text-[15px] font-semibold text-white transition-[background-color,transform] duration-200 hover:bg-carvao/85 focus-visible:outline-carvao active:scale-[0.96]"
+            className={`mt-6 inline-flex min-h-11 items-center justify-center self-start rounded-full px-5 py-2.5 text-[14px] font-semibold transition-[background-color,transform] duration-200 active:scale-[0.96] ${
+              special
+                ? "bg-white text-carvao hover:bg-white/85"
+                : "bg-carvao text-white hover:bg-carvao/85 focus-visible:outline-carvao"
+            }`}
           >
             Assinar pelo WhatsApp
           </a>
